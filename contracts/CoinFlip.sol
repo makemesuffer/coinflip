@@ -10,7 +10,8 @@ contract CoinFlip is AccessControl {
 
     // events
     event fundsReceived(address _from, uint _amount);
-    
+    event fundsWithdrawn(address _to, uint _amount);
+
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender); // set owner as admin
     }
@@ -39,4 +40,11 @@ contract CoinFlip is AccessControl {
 
     // returns the amount held in this contract
     function getBalance() public view onlyAdmin returns (uint) { return address(this).balance; }
+
+    // withdraw amountWei from contract to caller address
+    function withdrawFunds(uint amountWei) external onlyAdmin {
+        require(amountWei <= address(this).balance, "Not enough funds in contract");
+        payable(msg.sender).transfer(amountWei);
+        emit fundsWithdrawn(msg.sender, amountWei);
+    }
 }
