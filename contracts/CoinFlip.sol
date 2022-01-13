@@ -8,12 +8,17 @@ contract CoinFlip is AccessControl {
     uint _maxBet = 5000000000000000000; // default maximum bet is 5 ETH in wei units
     uint _playerWinPercentage = 50; // default winning percentage is 50%
 
+    // events
+    event fundsReceived(address _from, uint _amount);
+    
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender); // set owner as admin
     }
 
     // needed to receive eth
-    receive() external payable { }
+    receive() external payable { 
+        emit fundsReceived(msg.sender, msg.value);
+    }
 
     modifier onlyAdmin() {
         // this modifier restricts function calls to only succeed when caller has admin role
