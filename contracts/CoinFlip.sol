@@ -12,6 +12,9 @@ contract CoinFlip is AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender); // set owner as admin
     }
 
+    // needed to receive eth
+    receive() external payable { }
+
     modifier onlyAdmin() {
         // this modifier restricts function calls to only succeed when caller has admin role
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender));
@@ -28,4 +31,7 @@ contract CoinFlip is AccessControl {
         _playerWinPercentage = percentage; 
     }
     function getWinPercentage() public view onlyAdmin returns (uint) { return _playerWinPercentage; }
+
+    // returns the amount held in this contract
+    function getBalance() public view onlyAdmin returns (uint) { return address(this).balance; }
 }
