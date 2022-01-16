@@ -5,7 +5,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.4.2/contr
 
 contract CoinFlip is AccessControl {
     uint _minBet = 10000000000000000; // default minimum bet is 0.01 ETH in wei units
-    uint _maxBet = 5000000000000000000; // default maximum bet is 5 ETH in wei units
+    uint _maxBet = 2000000000000000000; // default maximum bet is 2 ETH in wei units
     uint _playerWinPercentage = 49; // default winning percentage is 49%
 
     // events
