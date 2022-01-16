@@ -17,7 +17,7 @@ contract CoinFlip is AccessControl {
     }
 
     // needed to receive eth
-    receive() external payable { 
+    receive() external payable {
         emit fundsReceived(msg.sender, msg.value);
     }
 
@@ -27,14 +27,14 @@ contract CoinFlip is AccessControl {
         _;
     }
 
-    // state getters and updaters    
+    // state getters and updaters
     function setMinBet(uint amountWei) public onlyAdmin { _minBet = amountWei; }
     function getMinBet() public view onlyAdmin returns (uint) { return _minBet; }
     function setMaxBet(uint amountWei) public onlyAdmin { _maxBet = amountWei; }
     function getMaxBet() public view onlyAdmin returns (uint) { return _maxBet; }
-    function setPlayerWinPercentage(uint percentage) public onlyAdmin { 
+    function setPlayerWinPercentage(uint percentage) public onlyAdmin {
         require(percentage <= 100, "Player win percentage must be 100% or less");
-        _playerWinPercentage = percentage; 
+        _playerWinPercentage = percentage;
     }
     function getWinPercentage() public view onlyAdmin returns (uint) { return _playerWinPercentage; }
 
@@ -46,5 +46,13 @@ contract CoinFlip is AccessControl {
         require(amountWei <= address(this).balance, "Not enough funds in contract");
         payable(msg.sender).transfer(amountWei);
         emit fundsWithdrawn(msg.sender, amountWei);
+    }
+
+    // flip (main game) function
+    function flip(uint amountWeiToBet) public payable {
+        require(amountWeiToBet >= _minBet, "Bet must be bigger than or equal to the minimum");
+        require(amountWeiToBet <= _maxBet, "Bet must be smaller than or equal to the maximum");
+
+
     }
 }
