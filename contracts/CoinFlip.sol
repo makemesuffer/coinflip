@@ -13,6 +13,7 @@ contract CoinFlip is AccessControl {
     // events
     event fundsReceived(address _from, uint _amount);
     event fundsWithdrawn(address _to, uint _amount);
+    event playerFlipped(uint amountWon, uint amountCommission, uint amountSent);
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender); // set owner as admin
@@ -53,7 +54,7 @@ contract CoinFlip is AccessControl {
     }
 
     // flip (main game) function
-    function flip() public payable returns (uint) {
+    function flip() public payable {
         require(msg.value > 0, "Cannot bet zero");
         require(msg.value * 2 < address(this).balance, "Contract does not have enough funds");
         require(msg.value >= _minBet, "Bet must be bigger than or equal to the minimum");
@@ -73,9 +74,9 @@ contract CoinFlip is AccessControl {
             uint amountToSend = winnings - commission;
 
             payable(msg.sender).transfer(amountToSend);
-            return amountToSend;
+            emit playerFlipped(winnings, commission, amountToSend);
         } else {
-            return 0;
+            emit playerFlipped(0, 0, 0);
         }
 
     }
