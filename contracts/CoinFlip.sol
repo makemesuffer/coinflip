@@ -39,6 +39,8 @@ contract CoinFlip is AccessControl {
         _playerWinPercentage = percentage;
     }
     function getWinPercentage() public view onlyAdmin returns (uint) { return _playerWinPercentage; }
+    function getCommissionBasisPoints() public view onlyAdmin returns (uint) { return _commissionBasisPoints; }
+    function setCommissionBasisPoints(uint commissionBasisPoints) public onlyAdmin { _commissionBasisPoints = commissionBasisPoints; }
 
     // returns the amount held in this contract
     function getBalance() public view onlyAdmin returns (uint) { return address(this).balance; }
@@ -51,11 +53,11 @@ contract CoinFlip is AccessControl {
     }
 
     // flip (main game) function
-    function flip(uint amountWeiToBet) public payable returns (uint) {
-        require(amountWeiToBet > 0, "Cannot bet zero");
-        require(amountWeiToBet * 2 < address(this).balance, "Contract does not have enough funds");
-        require(amountWeiToBet >= _minBet, "Bet must be bigger than or equal to the minimum");
-        require(amountWeiToBet <= _maxBet, "Bet must be smaller than or equal to the maximum");
+    function flip() public payable returns (uint) {
+        require(msg.value > 0, "Cannot bet zero");
+        require(msg.value * 2 < address(this).balance, "Contract does not have enough funds");
+        require(msg.value >= _minBet, "Bet must be bigger than or equal to the minimum");
+        require(msg.value <= _maxBet, "Bet must be smaller than or equal to the maximum");
 
         _randNonce++;
         uint number = uint(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender, _randNonce)))%99);
@@ -64,9 +66,17 @@ contract CoinFlip is AccessControl {
             // the minus one is to account for the numbers ranging from 0 to 99
             // if this condition is true, then player has one (payout)
 
+            uint winnings = msg.value * 2; 
 
-        } 
+            // compute commission from basis points
+            uint commission = (winnings * _commissionBasisPoints) / 10000;
+            uint amountToSend = winnings - commission;
 
-        return number;
+            payable(msg.sender).transfer(amountToSend);
+            return amountToSend;
+        } else {
+            return 0;
+        }
+
     }
 }
