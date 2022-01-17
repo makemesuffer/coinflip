@@ -7,6 +7,8 @@ contract CoinFlip is AccessControl {
     uint _minBet = 10000000000000000; // default minimum bet is 0.01 ETH in wei units
     uint _maxBet = 2000000000000000000; // default maximum bet is 2 ETH in wei units
     uint _playerWinPercentage = 49; // default winning percentage is 49%
+    uint _randNonce = 0;
+    uint _commissionBasisPoints = 350;
 
     // events
     event fundsReceived(address _from, uint _amount);
@@ -49,10 +51,22 @@ contract CoinFlip is AccessControl {
     }
 
     // flip (main game) function
-    function flip(uint amountWeiToBet) public payable {
+    function flip(uint amountWeiToBet) public payable returns (uint) {
+        require(amountWeiToBet > 0, "Cannot bet zero");
+        require(amountWeiToBet * 2 < address(this).balance, "Contract does not have enough funds");
         require(amountWeiToBet >= _minBet, "Bet must be bigger than or equal to the minimum");
         require(amountWeiToBet <= _maxBet, "Bet must be smaller than or equal to the maximum");
 
+        _randNonce++;
+        uint number = uint(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender, _randNonce)))%99);
+        
+        if (number <= _playerWinPercentage - 1) {
+            // the minus one is to account for the numbers ranging from 0 to 99
+            // if this condition is true, then player has one (payout)
 
+
+        } 
+
+        return number;
     }
 }
