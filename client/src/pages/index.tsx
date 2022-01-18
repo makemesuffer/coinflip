@@ -16,6 +16,8 @@ import { BetForm } from 'components/ui/BetForm';
 import { RecentPlaysNoSSR } from 'components/ui/RecentPlays';
 import { WinLoseForm } from 'components/ui/WinLoseForm';
 import { FlippingForm } from 'components/ui/FlippingForm';
+import useContract from 'hooks/useContract';
+import { ethToWei } from 'utils/formatEther';
 
 // TODO: leaderboard no ssr! - DONE
 // TODO: split components - DONE
@@ -26,16 +28,23 @@ import { FlippingForm } from 'components/ui/FlippingForm';
 // TODO: mobile - DONE
 // TODO: headers! - DONE
 // TODO: boost perf - DONE
-// TODO: leaderboard mockup
-// TODO: CONTRACT CALL FOR GAME
+// TODO: leaderboard mockup - DONE
+// TODO: CONTRACT CALL FOR GAME - DONE
+// TODO: CONTRACT INTEGRATION
+// TODO: FLOW - DONE
+// TODO: MATIC SMART RECOGNITION
 
 const Home: NextPage = () => {
   const { user } = useTypedSelector((state) => state.app);
   const { account, error, activate, setError, active } = useWeb3React();
   const [connecting, setConnecting] = useState(false);
   const { data: etherBalance } = useETHBalance(account);
-  const { setUser } = useActions();
+  const { setUser, addBet } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
+
+  // const test = () => {
+  //   addBet({ betSize: ethToWei(0.01) });
+  // };
 
   useEffect(() => {
     onboarding.current = new MetaMaskOnboarding();
@@ -121,7 +130,17 @@ const Home: NextPage = () => {
               <RecentPlaysNoSSR />
             </div>
           ) : (
-            <BetForm />
+            <>
+              {/* <Button
+                isLoading={connecting}
+                onClick={() => {
+                  test();
+                }}
+              >
+                Test Contract
+              </Button> */}
+              <BetForm />
+            </>
           )}
         </div>
       </div>

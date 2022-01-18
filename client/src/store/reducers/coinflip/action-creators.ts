@@ -1,3 +1,6 @@
+import { BigNumber } from 'ethers';
+import { AppDispatch, RootState } from 'store';
+
 import {
   IContractConnection,
   SetContractAction,
@@ -5,7 +8,7 @@ import {
   SetIsLoadingAction,
   CoinflipActionEnum,
 } from './types';
-// import { wheelSelectors } from './selectors';
+import { coinflipSelectors } from './selectors';
 
 export const CoinflipActionCreators = {
   setIsLoading: (payload: boolean): SetIsLoadingAction => ({
@@ -23,31 +26,33 @@ export const CoinflipActionCreators = {
     payload,
   }),
 
-//   getPrize:
-//     ({ gameId }: { gameId: number | undefined }) =>
-//     async (dispatch: AppDispatch, getState: () => RootState) => {
-//       if (gameId) {
-//         const contract = wheelSelectors.selectContract(getState());
-//         const amountToWithdraw = await contract.getAmountToWithdraw(gameId);
-//         console.log(amountToWithdraw.toString());
-//         const win = await contract.withdrawWin(gameId);
-//         console.log(win);
-//       }
-//     },
+  //   getPrize:
+  //     ({ gameId }: { gameId: number | undefined }) =>
+  //     async (dispatch: AppDispatch, getState: () => RootState) => {
+  //       if (gameId) {
+  //         const contract = wheelSelectors.selectContract(getState());
+  //         const amountToWithdraw = await contract.getAmountToWithdraw(gameId);
+  //         console.log(amountToWithdraw.toString());
+  //         const win = await contract.withdrawWin(gameId);
+  //         console.log(win);
+  //       }
+  //     },
 
-//   addBet:
-//     ({ betValue, betSize }: { betValue: number; betSize: BigNumber }) =>
-//     async (dispatch: AppDispatch, getState: () => RootState) => {
-//       const store = getState();
-//       const contract = wheelSelectors.selectContract(store);
-//       if (contract) {
-//         try {
-//           await contract.createBet(String(betValue), {
-//             value: betSize.toString(),
-//           });
-//         } catch (err) {
-//           dispatch(WheelActionCreators.setError(['Unexpected Error']));
-//         }
-//       }
-//     },
+  addBet:
+    ({ betSize }: { betSize: BigNumber }) =>
+    async (dispatch: AppDispatch, getState: () => RootState) => {
+      const store = getState();
+      const contract = coinflipSelectors.selectContract(store);
+      if (contract) {
+        try {
+          const test = await contract.flip({
+            value: betSize.toString(),
+          });
+          console.log(test);
+        } catch (err) {
+          console.log(err);
+          dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
+        }
+      }
+    },
 };

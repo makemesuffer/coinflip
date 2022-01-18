@@ -2,6 +2,7 @@ import { useTheme } from 'next-themes';
 import classNames from 'classnames';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
@@ -11,15 +12,19 @@ import { Modal } from 'components/common/Modal';
 import { IUser } from 'store/reducers/app/types';
 import { Dropdown } from 'components/ui/Dropdown';
 import { RecentPlays } from 'components/ui/RecentPlays';
+import { Link } from 'components/common/Link';
 
 const Header = () => {
   const { theme, user } = useTypedSelector((state) => state.app);
   const { setThemeCookie } = useActions();
   const { theme: _theme, setTheme } = useTheme();
   const { deactivate } = useWeb3React();
+  const router = useRouter();
   const { setUser } = useActions();
-  const [showMobileToday, setShowMobileToday] = useState(false);
+  const [showMobileToday, setShowMobileToday] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState<string>('recent');
+
+  console.log(router.pathname);
 
   const deactivateAccount = () => {
     deactivate();
@@ -58,7 +63,7 @@ const Header = () => {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
-                <p className="text-sm ml-auto">{user.cashAmount} ETH</p>
+                <p className="text-sm ml-auto">{user.cashAmount} MATIC</p>
               </div>
             </div>
           </label>
@@ -78,7 +83,13 @@ const Header = () => {
             Today
           </Button>
         </div>
-        <Button>Leaderboard</Button>
+        <Link
+          hrefValue={router.pathname === '/leaderboard' ? '/' : '/leaderboard'}
+        >
+          <Button>
+            {router.pathname === '/leaderboard' ? 'Game' : 'Leaderboard'}
+          </Button>
+        </Link>
       </div>
       {user.cashAmount && (
         <label htmlFor="account-modal" className="md:hidden px-2 pt-5">
@@ -91,7 +102,7 @@ const Header = () => {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
-                <p className="text-sm ml-auto">{user.cashAmount} ETH</p>
+                <p className="text-sm ml-auto">{user.cashAmount} MATIC</p>
               </div>
             </div>
           </div>
@@ -109,7 +120,7 @@ const Header = () => {
             </div>
             <div className="flex flex-col text-center md:w-1/3 w-9/12 mx-auto">
               <h5 className="text-xl font-bold py-1">Balance:</h5>
-              <p className="text-md">{user.cashAmount} ETH</p>
+              <p className="text-md">{user.cashAmount} MATIC</p>
             </div>
           </div>
           <div className="mt-2 flex flex-col divide-y w-full text-center">

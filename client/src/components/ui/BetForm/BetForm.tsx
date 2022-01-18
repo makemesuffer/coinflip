@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 
 import { Button } from 'components/common/Button';
+import { FlippingForm } from '../FlippingForm';
 
 interface ISelectedValues {
   side: string;
@@ -12,11 +13,27 @@ const BetForm = () => {
   const [selectedValues, setSelectedValues] = useState<ISelectedValues>(
     {} as ISelectedValues
   );
+  const [showFlipping, setShowFlipping] = useState(false);
 
   const addFocus = (key: string, value: string) => {
     const valuesToSet = { ...selectedValues, [key]: value };
     setSelectedValues(valuesToSet);
   };
+
+  const gameStarter = () => {
+    if (selectedValues.side && selectedValues.value) {
+      setShowFlipping(true);
+    } else {
+      // TODO: notifs
+      alert('Select everything fucker');
+    }
+  };
+
+  if (showFlipping) {
+    return (
+      <FlippingForm side={selectedValues.side} amount={+selectedValues.value} />
+    );
+  }
 
   return (
     <div>
@@ -48,7 +65,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.01')}
           >
-            0.01 ETH
+            0.01 MATIC
           </Button>
           <Button
             additionalClass={
@@ -56,7 +73,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.05')}
           >
-            0.05 ETH
+            0.05 MATIC
           </Button>
           <Button
             additionalClass={
@@ -64,7 +81,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.1')}
           >
-            0.1 ETH
+            0.1 MATIC
           </Button>
           <Button
             additionalClass={
@@ -72,7 +89,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.25')}
           >
-            0.25 ETH
+            0.25 MATIC
           </Button>
           <Button
             additionalClass={
@@ -80,7 +97,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.5')}
           >
-            0.5 ETH
+            0.5 MATIC
           </Button>
           <Button
             additionalClass={
@@ -88,10 +105,12 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '1')}
           >
-            1 ETH
+            1 MATIC
           </Button>
         </div>
-        <Button additionalClass="p-2">DOUBLE OF NOTHING</Button>
+        <Button additionalClass="p-2" onClick={gameStarter}>
+          DOUBLE OF NOTHING
+        </Button>
       </div>
     </div>
   );

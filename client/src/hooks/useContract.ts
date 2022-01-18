@@ -4,13 +4,13 @@ import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
 import { useActions } from './useActions';
+import { abi } from 'data/abi';
+import { address } from 'data/address';
 
 export default function useContract<T extends Contract = Contract>(
-  contract: Contract | null
+  // contract: Contract | null
 ) {
-  const abi = contract && contract.abi_string.split(contract.abi_delimiter);
-  const address =
-    contract?.address || '0xb32c83b93a52db7067fa382818f8e830c5644b61';
+  // const abi = contract && contract.abi_string.split(contract.abi_delimiter);
   const { library, account, chainId } = useWeb3React();
   const { setContract } = useActions();
 
