@@ -1,6 +1,10 @@
 module.exports = {
-    purge: [],
-    darkMode: false, // or 'media' or 'class'
+    // purge: [],
+    content: [
+        "./src/**/*.{js,ts,jsx,tsx}",
+        "./components/**/*.{js,ts,jsx,tsx}",
+    ],
+    media: false, // or 'media' or 'class'
     theme: {
         extend: {},
     },
@@ -13,7 +17,8 @@ module.exports = {
     daisyui: {
         themes: [
             'dark',
-            'light'
+            'light',
+            'cyberpunk'
         ],
     }
 }
