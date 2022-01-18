@@ -14,7 +14,6 @@ class CookieTool {
   }
 
   getCookie(name: string) {
-    const test = cookie.get(name);
     return cookie.get(name);
   }
 }

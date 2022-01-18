@@ -1,3 +1,10 @@
+export interface IRecentPlays {
+  address: string;
+  win: boolean,
+  value: number;
+  time: string;
+}
+
 export const recentPlays = [
   {
     address: '0xF09ca74AFa53333B88223A27548C2D9B9b650768',

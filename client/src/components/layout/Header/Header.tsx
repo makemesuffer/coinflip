@@ -1,6 +1,7 @@
 import { useTheme } from 'next-themes';
 import classNames from 'classnames';
 import { useWeb3React } from '@web3-react/core';
+import { useState } from 'react';
 
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
@@ -8,6 +9,8 @@ import { useTypedSelector } from 'hooks/useTypedSelector';
 import { Identicon } from 'components/common/Identicon';
 import { Modal } from 'components/common/Modal';
 import { IUser } from 'store/reducers/app/types';
+import { Dropdown } from 'components/ui/Dropdown';
+import { RecentPlays } from 'components/ui/RecentPlays';
 
 const Header = () => {
   const { theme, user } = useTypedSelector((state) => state.app);
@@ -15,6 +18,8 @@ const Header = () => {
   const { theme: _theme, setTheme } = useTheme();
   const { deactivate } = useWeb3React();
   const { setUser } = useActions();
+  const [showMobileToday, setShowMobileToday] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<string>('recent');
 
   const deactivateAccount = () => {
     deactivate();
@@ -65,7 +70,14 @@ const Header = () => {
         >
           {theme}
         </Button>
-        <Button>Today</Button>
+        <div className="hidden md:block">
+          <Dropdown items={[]} />
+        </div>
+        <div className="block md:hidden">
+          <Button onClick={() => setShowMobileToday(!showMobileToday)}>
+            Today
+          </Button>
+        </div>
         <Button>Leaderboard</Button>
       </div>
       {user.cashAmount && (
@@ -118,6 +130,34 @@ const Header = () => {
           </label>
         </div>
       </Modal>
+      <div className="block md:hidden">
+        {showMobileToday && (
+          <ul
+            tabIndex={0}
+            className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-96"
+          >
+            <div className="grid grid-cols-2 items-center gap-3 p-2">
+              <Button
+                additionalClass={
+                  selectedValue === 'recent' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => setSelectedValue('recent')}
+              >
+                Recent
+              </Button>
+              <Button
+                additionalClass={
+                  selectedValue === 'top wins' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => setSelectedValue('top wins')}
+              >
+                Top Wins
+              </Button>
+            </div>
+            <RecentPlays />
+          </ul>
+        )}
+      </div>
     </header>
   );
 };

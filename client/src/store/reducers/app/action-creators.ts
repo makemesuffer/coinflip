@@ -1,5 +1,6 @@
 import { AppDispatch } from 'store';
 import { CookieTool } from 'tools';
+
 import { AppActionEnum, ClearUserAction, IUser, SetThemeAction, SetUserAction } from './types';
 
 export const AppActionCreators = {

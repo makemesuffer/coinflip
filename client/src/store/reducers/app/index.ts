@@ -1,4 +1,5 @@
 import { CookieTool } from 'tools';
+
 import { AppAction, AppActionEnum, AppState, IUser } from './types';
 
 const initialState: AppState = {
