@@ -17,7 +17,7 @@ contract CoinFlip is AccessControl {
     // events
     event fundsReceived(address _from, uint _amount);
     event fundsWithdrawn(address _to, uint _amount);
-    event playerFlipped(uint amountWon, uint amountCommission, uint amountSent, uint headsOrTails, uint randomNonce, uint numberGenerated);
+    event playerFlipped(uint indexed randomNonce, address indexed playerAddress, uint amountWon, uint amountCommission, uint amountSent, uint headsOrTails, uint numberGenerated);
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender); // set owner as admin
@@ -83,10 +83,10 @@ contract CoinFlip is AccessControl {
             uint amountToSend = winnings - commission;
 
             payable(msg.sender).transfer(amountToSend);
-            emit playerFlipped(winnings, commission, amountToSend, headsOrTails, _randNonce, number);
+            emit playerFlipped(_randNonce, msg.sender, winnings, commission, amountToSend, headsOrTails, number);
         } else {
             playerLosses++;
-            emit playerFlipped(0, 0, 0, headsOrTails, _randNonce, number);
+            emit playerFlipped(_randNonce, msg.sender, 0, 0, 0, headsOrTails, number);
         }
 
     }
