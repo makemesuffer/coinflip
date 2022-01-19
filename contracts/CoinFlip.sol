@@ -85,7 +85,7 @@ contract CoinFlip is AccessControl {
             payable(msg.sender).transfer(amountToSend);
             emit playerFlipped(winnings, commission, amountToSend, headsOrTails, _randNonce, number);
         } else {
-            playerLosses--;
+            playerLosses++;
             emit playerFlipped(0, 0, 0, headsOrTails, _randNonce, number);
         }
 
