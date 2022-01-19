@@ -1,0 +1,15 @@
+Smart Contract Features To Implement
+
+1. Flip
+    a. Choose heads or tails
+    b. Choose amount from a preset list
+    c. We can also let players manually set how much to bet (above a set minimum)
+
+2. Recent Flips
+
+3. Top Wins / Win streak
+
+4. Leaderboard
+    a. Top Ten Gainers
+    b. Rankings (degen points)
+    c. Multiple sites with different data sets
