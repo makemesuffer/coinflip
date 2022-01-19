@@ -141,6 +141,12 @@ export const abi = [
       {
         indexed: false,
         internalType: 'uint256',
+        name: 'headsOrTails',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
         name: 'randomNonce',
         type: 'uint256',
       },
@@ -168,7 +174,13 @@ export const abi = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'headsOrTails',
+        type: 'uint256',
+      },
+    ],
     name: 'flip',
     outputs: [],
     stateMutability: 'payable',
@@ -301,6 +313,32 @@ export const abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'playerLosses',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'playerWins',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'bytes32',
@@ -402,6 +440,19 @@ export const abi = [
         internalType: 'bool',
         name: '',
         type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'totalBets',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',

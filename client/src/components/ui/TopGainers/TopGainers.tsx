@@ -12,25 +12,25 @@ const TopGainers: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          <tr className="hover">
+          <tr className="hover cursor-pointer">
             <th>1</th>
             <td>2323242</td>
             <td>20 MATIC</td>
             <td>3 hours ago</td>
           </tr>
-          <tr className="hover">
+          <tr className="hover cursor-pointer">
             <th>2</th>
             <td>2323242</td>
             <td>18 MATIC</td>
             <td>3 hours ago</td>
           </tr>
-          <tr className="hover">
+          <tr className="hover cursor-pointer">
             <th>3</th>
             <td>2323242</td>
             <td>14 MATIC</td>
             <td>3 hours ago</td>
           </tr>
-          <tr className="hover">
+          <tr className="hover cursor-pointer">
             <th>4</th>
             <td>2323242</td>
             <td>10 MATIC</td>

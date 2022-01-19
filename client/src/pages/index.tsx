@@ -41,10 +41,19 @@ const Home: NextPage = () => {
   const { data: etherBalance } = useETHBalance(account);
   const { setUser, addBet } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
+  const contract = useContract();
 
-  // const test = () => {
-  //   addBet({ betSize: ethToWei(0.01) });
-  // };
+  const test = async () => {
+    addBet({ betSize: ethToWei(0.05), side: 1 });
+  };
+
+  useEffect(() => {
+    if (contract) {
+      contract.on('playerFlipped', (from, to, amount, event) => {
+        console.log(from, to, amount, event);
+      });
+    }
+  }, [contract]);
 
   useEffect(() => {
     onboarding.current = new MetaMaskOnboarding();
@@ -131,14 +140,14 @@ const Home: NextPage = () => {
             </div>
           ) : (
             <>
-              {/* <Button
+              <Button
                 isLoading={connecting}
                 onClick={() => {
                   test();
                 }}
               >
                 Test Contract
-              </Button> */}
+              </Button>
               <BetForm />
             </>
           )}

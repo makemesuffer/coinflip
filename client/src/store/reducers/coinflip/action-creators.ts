@@ -30,7 +30,7 @@ export const CoinflipActionCreators = {
   //     ({ gameId }: { gameId: number | undefined }) =>
   //     async (dispatch: AppDispatch, getState: () => RootState) => {
   //       if (gameId) {
-  //         const contract = wheelSelectors.selectContract(getState());
+  //         const contract = coinflipSelector.selectContract(getState());
   //         const amountToWithdraw = await contract.getAmountToWithdraw(gameId);
   //         console.log(amountToWithdraw.toString());
   //         const win = await contract.withdrawWin(gameId);
@@ -39,13 +39,13 @@ export const CoinflipActionCreators = {
   //     },
 
   addBet:
-    ({ betSize }: { betSize: BigNumber }) =>
+    ({ betSize, side }: { betSize: BigNumber; side: number }) =>
     async (dispatch: AppDispatch, getState: () => RootState) => {
       const store = getState();
       const contract = coinflipSelectors.selectContract(store);
       if (contract) {
         try {
-          const test = await contract.flip({
+          const test = await contract.flip(side, {
             value: betSize.toString(),
           });
           console.log(test);

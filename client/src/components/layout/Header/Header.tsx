@@ -24,8 +24,6 @@ const Header = () => {
   const [showMobileToday, setShowMobileToday] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState<string>('recent');
 
-  console.log(router.pathname);
-
   const deactivateAccount = () => {
     deactivate();
     setUser({} as IUser);
