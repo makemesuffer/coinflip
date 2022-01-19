@@ -64,10 +64,12 @@ contract CoinFlip is AccessControl {
         require(msg.value >= _minBet, "Bet must be bigger than or equal to the minimum");
         require(msg.value <= _maxBet, "Bet must be smaller than or equal to the maximum");
 
-        require(headsOrTails <= 1, "Pass 0 for heads, 1 for tails")
+        require(headsOrTails <= 1, "Pass 0 for heads, 1 for tails");
+
+
 
         _randNonce++;
-        uint number = uint(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender, _randNonce, )))%99);
+        uint number = uint(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender, _randNonce, headsOrTails)))%99);
 
         if (number <= _playerWinPercentage - 1) {
             // the minus one is to account for the numbers ranging from 0 to 99
