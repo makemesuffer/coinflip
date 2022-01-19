@@ -10,10 +10,14 @@ contract CoinFlip is AccessControl {
     uint _randNonce = 0;
     uint _commissionBasisPoints = 350;
 
+    uint public playerWins = 0; // total number of flips that won
+    uint public playerLosses = 0; // total number of flips that lost
+    uint public totalBets = 0; // cumulative total bets
+
     // events
     event fundsReceived(address _from, uint _amount);
     event fundsWithdrawn(address _to, uint _amount);
-    event playerFlipped(uint amountWon, uint amountCommission, uint amountSent, uint randomNonce, uint numberGenerated);
+    event playerFlipped(uint amountWon, uint amountCommission, uint amountSent, uint headsOrTails, uint randomNonce, uint numberGenerated);
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender); // set owner as admin
@@ -54,29 +58,35 @@ contract CoinFlip is AccessControl {
     }
 
     // flip (main game) function
-    function flip() public payable {
+    function flip(uint headsOrTails) public payable {
         require(msg.value > 0, "Cannot bet zero");
         require(msg.value * 2 < address(this).balance, "Contract does not have enough funds");
         require(msg.value >= _minBet, "Bet must be bigger than or equal to the minimum");
         require(msg.value <= _maxBet, "Bet must be smaller than or equal to the maximum");
 
+        require(headsOrTails <= 1, "Pass 0 for heads, 1 for tails");
+
+        totalBets += msg.value;
+
         _randNonce++;
-        uint number = uint(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender, _randNonce)))%99);
-        
+        uint number = uint(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender, _randNonce, headsOrTails)))%99);
+
         if (number <= _playerWinPercentage - 1) {
+            playerWins++;
             // the minus one is to account for the numbers ranging from 0 to 99
             // if this condition is true, then player has one (payout)
 
-            uint winnings = msg.value * 2; 
+            uint winnings = msg.value * 2;
 
             // compute commission from basis points
             uint commission = (winnings * _commissionBasisPoints) / 10000;
             uint amountToSend = winnings - commission;
 
             payable(msg.sender).transfer(amountToSend);
-            emit playerFlipped(winnings, commission, amountToSend, _randNonce, number);
+            emit playerFlipped(winnings, commission, amountToSend, headsOrTails, _randNonce, number);
         } else {
-            emit playerFlipped(0, 0, 0, _randNonce, number);
+            playerLosses++;
+            emit playerFlipped(0, 0, 0, headsOrTails, _randNonce, number);
         }
 
     }
