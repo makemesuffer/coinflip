@@ -49,9 +49,9 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (contract) {
-      contract.on('playerFlipped', (from, to, amount, event) => {
-        console.log(from, to, amount, event);
-      });
+      // contract.on('playerFlipped', (from, to, amount, event) => {
+      //   console.log(from, to, amount, event);
+      // });
     }
   }, [contract]);
 
