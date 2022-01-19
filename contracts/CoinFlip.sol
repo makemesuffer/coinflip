@@ -17,7 +17,7 @@ contract CoinFlip is AccessControl {
     // events
     event fundsReceived(address _from, uint _amount);
     event fundsWithdrawn(address _to, uint _amount);
-    event playerFlipped(uint amountWon, uint amountCommission, uint amountSent, uint randomNonce, uint numberGenerated);
+    event playerFlipped(uint amountWon, uint amountCommission, uint amountSent, uint headsOrTails, uint randomNonce, uint numberGenerated);
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender); // set owner as admin
@@ -66,12 +66,13 @@ contract CoinFlip is AccessControl {
 
         require(headsOrTails <= 1, "Pass 0 for heads, 1 for tails");
 
-
+        totalBets += msg.value;
 
         _randNonce++;
         uint number = uint(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, msg.sender, _randNonce, headsOrTails)))%99);
 
         if (number <= _playerWinPercentage - 1) {
+            playerWins++;
             // the minus one is to account for the numbers ranging from 0 to 99
             // if this condition is true, then player has one (payout)
 
@@ -82,9 +83,10 @@ contract CoinFlip is AccessControl {
             uint amountToSend = winnings - commission;
 
             payable(msg.sender).transfer(amountToSend);
-            emit playerFlipped(winnings, commission, amountToSend, _randNonce, number);
+            emit playerFlipped(winnings, commission, amountToSend, headsOrTails, _randNonce, number);
         } else {
-            emit playerFlipped(0, 0, 0, _randNonce, number);
+            playerLosses--;
+            emit playerFlipped(0, 0, 0, headsOrTails, _randNonce, number);
         }
 
     }
