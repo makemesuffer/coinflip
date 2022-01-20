@@ -11,6 +11,7 @@ import {
   CoinflipActionEnum,
 } from './types';
 import { coinflipSelectors } from './selectors';
+import { isAbsolute } from 'path/posix';
 
 export const CoinflipActionCreators = {
   setIsLoading: (payload: boolean): SetIsLoadingAction => ({
@@ -45,12 +46,26 @@ export const CoinflipActionCreators = {
       const store = getState();
       let contract = coinflipSelectors.selectContract(store);
       if (!contract) {
+        // hard-coding rinkeby, not sure how to automatically switch
         contract = new ethers.Contract(address, abi, ethers.getDefaultProvider('rinkeby'));
       }
-      console.log(contract);
+
       const filter = contract.filters.playerFlipped();
       const results = await contract.queryFilter(filter, -1000000, 'latest');
-      console.log(results)
+
+      const sorted = results.sort((a, b) => { return b.blockNumber - a.blockNumber });
+      const mapped = sorted.map(i => {
+        return {
+          blockNumber: i.blockNumber,
+          playerAddress: i.args.playerAddress,
+          randomNonce: i.args.randomNonce,
+          headsOrTails: i.args.headsOrTails,
+          didPlayerWin: i.args.amountWon > 0,
+          amountWon: i.args.amountWon
+        };
+      })
+      console.log(mapped)
+      return mapped;
     } catch (err) {
       console.log(err);
       dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
