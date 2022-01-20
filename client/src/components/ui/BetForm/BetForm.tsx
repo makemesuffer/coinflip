@@ -2,7 +2,10 @@ import { useState } from 'react';
 // import classNames from 'classnames';
 
 import { Button } from 'components/common/Button';
-import { FlippingForm } from '../FlippingForm';
+import { useActions } from 'hooks/useActions';
+import { ethToWei } from 'utils/formatEther';
+import { AlertTypes } from 'store/reducers/alert/types';
+import { AlertDrawer } from '../AlertDrawer';
 
 interface ISelectedValues {
   side: string;
@@ -13,7 +16,8 @@ const BetForm = () => {
   const [selectedValues, setSelectedValues] = useState<ISelectedValues>(
     {} as ISelectedValues
   );
-  const [showFlipping, setShowFlipping] = useState(false);
+  // setGameStatus setPlayerBet
+  const { addBet, setAlert } = useActions();
 
   const addFocus = (key: string, value: string) => {
     const valuesToSet = { ...selectedValues, [key]: value };
@@ -22,18 +26,15 @@ const BetForm = () => {
 
   const gameStarter = () => {
     if (selectedValues.side && selectedValues.value) {
-      setShowFlipping(true);
+      addBet({
+        betSize: ethToWei(+selectedValues.value),
+        side: selectedValues.side === 'tails' ? 1 : 0,
+      });
     } else {
-      // TODO: notifs
-      alert('Select everything fucker');
+      console.log('aaa');
+      setAlert({ type: AlertTypes.error, message: 'Select all fields' });
     }
   };
-
-  if (showFlipping) {
-    return (
-      <FlippingForm side={selectedValues.side} amount={+selectedValues.value} />
-    );
-  }
 
   return (
     <div>

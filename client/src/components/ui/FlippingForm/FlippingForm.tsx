@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { BigNumber } from 'ethers';
 
 import { Button } from 'components/common/Button';
 import { WinLoseForm } from '../WinLoseForm';
 
 interface IFlippingFormProps {
-  side: string;
-  amount: number;
+  side: 1 | 0;
+  amount: number | BigNumber;
 }
 
 const FlippingForm: React.FC<IFlippingFormProps> = ({ side, amount }) => {
@@ -25,9 +26,9 @@ const FlippingForm: React.FC<IFlippingFormProps> = ({ side, amount }) => {
     <div>
       <div className="text-center text-xl font-bold mt-10">FLIPPING</div>
       <div className="text-center text-xl font-bold mt-2">
-        {side.toUpperCase()} FOR {amount} MATIC
+        {side === 1 ? 'TAILS' : 'HEADS'} FOR {Number(amount)} MATIC
       </div>
-      <p>For test purpose for now..</p>
+      {/* <p>For test purpose for now..</p>
       <div className="grid grid-cols-2 gap-5 mt-10">
         <Button
           onClick={() => {
@@ -43,7 +44,7 @@ const FlippingForm: React.FC<IFlippingFormProps> = ({ side, amount }) => {
         >
           Lose
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };
