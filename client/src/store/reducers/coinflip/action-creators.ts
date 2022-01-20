@@ -38,6 +38,15 @@ export const CoinflipActionCreators = {
   //       }
   //     },
 
+  filterQuery: () => async (dispatch: AppDispatch) => {
+    try {
+      console.log('query');
+    } catch (err) {
+      console.log(err);
+      dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
+    }
+  },
+
   addBet:
     ({ betSize, side }: { betSize: BigNumber; side: number }) =>
     async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -54,8 +63,15 @@ export const CoinflipActionCreators = {
           await tx.wait();
 
           const playerAddress = await contract.signer.getAddress();
-          const filter = await contract.filters.playerFlipped(null, playerAddress);
-          const query = await contract.queryFilter(filter, startBlock, 'latest');
+          const filter = await contract.filters.playerFlipped(
+            null,
+            playerAddress
+          );
+          const query = await contract.queryFilter(
+            filter,
+            startBlock,
+            'latest'
+          );
           console.log(query); // parse results
           // query will return an array of event logs
           // in 90 percent of all cases it should only return one event log
