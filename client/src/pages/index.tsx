@@ -39,7 +39,7 @@ const Home: NextPage = () => {
   const { account, error, activate, setError, active } = useWeb3React();
   const [connecting, setConnecting] = useState(false);
   const { data: etherBalance } = useETHBalance(account);
-  const { setUser, addBet } = useActions();
+  const { setUser, addBet, getLatest } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const contract = useContract();
 
@@ -48,6 +48,8 @@ const Home: NextPage = () => {
   };
 
   useEffect(() => {
+    getLatest();
+
     if (contract) {
       // contract.on('playerFlipped', (from, to, amount, event) => {
       //   console.log(from, to, amount, event);

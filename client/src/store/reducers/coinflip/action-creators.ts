@@ -1,5 +1,7 @@
-import { BigNumber } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { AppDispatch, RootState } from 'store';
+import { address } from 'data/address';
+import { abi } from 'data/abi';
 
 import {
   IContractConnection,
@@ -38,9 +40,17 @@ export const CoinflipActionCreators = {
   //       }
   //     },
 
-  filterQuery: () => async (dispatch: AppDispatch) => {
+  getLatest: () => async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
-      console.log('query');
+      const store = getState();
+      let contract = coinflipSelectors.selectContract(store);
+      if (!contract) {
+        contract = new ethers.Contract(address, abi, ethers.getDefaultProvider('rinkeby'));
+      }
+      console.log(contract);
+      const filter = contract.filters.playerFlipped();
+      const results = await contract.queryFilter(filter, -1000000, 'latest');
+      console.log(results)
     } catch (err) {
       console.log(err);
       dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
