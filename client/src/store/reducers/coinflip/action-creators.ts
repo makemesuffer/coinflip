@@ -63,7 +63,7 @@ export const CoinflipActionCreators = {
           didPlayerWin: i.args.amountWon > 0,
           amountWon: i.args.amountWon
         };
-      })
+      }).slice(0, 20);
       console.log(mapped)
       return mapped;
     } catch (err) {
