@@ -41,7 +41,7 @@ export const CoinflipActionCreators = {
   //       }
   //     },
 
-  getLatest: () => async (dispatch: AppDispatch, getState: () => RootState) => {
+  getRecent: () => async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       const store = getState();
       let contract = coinflipSelectors.selectContract(store);
@@ -64,7 +64,36 @@ export const CoinflipActionCreators = {
           amountWon: i.args.amountWon
         };
       }).slice(0, 20);
-      console.log(mapped)
+      return mapped;
+    } catch (err) {
+      console.log(err);
+      dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
+    }
+  },
+
+  getTopWins: () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    try {
+      const store = getState();
+      let contract = coinflipSelectors.selectContract(store);
+      if (!contract) {
+        // hard-coding rinkeby, not sure how to automatically switch
+        contract = new ethers.Contract(address, abi, ethers.getDefaultProvider('rinkeby'));
+      }
+
+      const filter = contract.filters.playerFlipped();
+      const results = await contract.queryFilter(filter, -1000000, 'latest');
+
+      const sorted = results.sort((a, b) => { return b.args.amountWon - a.args.amountWon });
+      const mapped = sorted.map(i => {
+        return {
+          blockNumber: i.blockNumber,
+          playerAddress: i.args.playerAddress,
+          randomNonce: i.args.randomNonce,
+          headsOrTails: i.args.headsOrTails,
+          didPlayerWin: i.args.amountWon > 0,
+          amountWon: i.args.amountWon
+        };
+      }).slice(0, 20);
       return mapped;
     } catch (err) {
       console.log(err);
