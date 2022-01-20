@@ -7,8 +7,17 @@ import {
   SetErrorsAction,
   SetIsLoadingAction,
   CoinflipActionEnum,
+  GameStatus,
+  SetGameStatusAction,
+  IPlayerBet,
+  SetPlayerBetAction,
+  IGameResult,
+  SetGameResultAction,
+  ClearGameAction,
 } from './types';
 import { coinflipSelectors } from './selectors';
+import { weiToEth } from 'utils/formatEther';
+import { parseQuery } from 'utils/parseQuery';
 
 export const CoinflipActionCreators = {
   setIsLoading: (payload: boolean): SetIsLoadingAction => ({
@@ -26,17 +35,24 @@ export const CoinflipActionCreators = {
     payload,
   }),
 
-  //   getPrize:
-  //     ({ gameId }: { gameId: number | undefined }) =>
-  //     async (dispatch: AppDispatch, getState: () => RootState) => {
-  //       if (gameId) {
-  //         const contract = coinflipSelector.selectContract(getState());
-  //         const amountToWithdraw = await contract.getAmountToWithdraw(gameId);
-  //         console.log(amountToWithdraw.toString());
-  //         const win = await contract.withdrawWin(gameId);
-  //         console.log(win);
-  //       }
-  //     },
+  setGameStatus: (payload: GameStatus): SetGameStatusAction => ({
+    type: CoinflipActionEnum.SET_GAME_STATUS,
+    payload,
+  }),
+
+  setPlayerBet: (payload: IPlayerBet): SetPlayerBetAction => ({
+    type: CoinflipActionEnum.SET_PLAYER_BET,
+    payload,
+  }),
+
+  clearGame: (): ClearGameAction => ({
+    type: CoinflipActionEnum.CLEAR_GAME,
+  }),
+
+  setGameResult: (payload: IGameResult): SetGameResultAction => ({
+    type: CoinflipActionEnum.SET_GAME_RESULT,
+    payload,
+  }),
 
   filterQuery: () => async (dispatch: AppDispatch) => {
     try {
@@ -48,7 +64,7 @@ export const CoinflipActionCreators = {
   },
 
   addBet:
-    ({ betSize, side }: { betSize: BigNumber; side: number }) =>
+    ({ betSize, side }: { betSize: BigNumber; side: 1 | 0 }) =>
     async (dispatch: AppDispatch, getState: () => RootState) => {
       const store = getState();
       const contract = coinflipSelectors.selectContract(store);
@@ -58,7 +74,15 @@ export const CoinflipActionCreators = {
           const tx = await contract.flip(side, {
             value: betSize.toString(),
           });
-          console.log(contract);
+
+          dispatch(
+            CoinflipActionCreators.setPlayerBet({
+              bet: +weiToEth(betSize),
+              side: side,
+            })
+          );
+
+          dispatch(CoinflipActionCreators.setGameStatus('flipping'));
 
           await tx.wait();
 
@@ -72,7 +96,18 @@ export const CoinflipActionCreators = {
             startBlock,
             'latest'
           );
-          console.log(query); // parse results
+
+          console.log(query.length);
+          console.log(query);
+          const parsedQuery = parseQuery(query[length].args);
+          console.log(parsedQuery);
+          dispatch(CoinflipActionCreators.setGameResult(parsedQuery));
+          if (parsedQuery.winnings === 0) {
+            dispatch(CoinflipActionCreators.setGameStatus('loss'));
+          } else {
+            dispatch(CoinflipActionCreators.setGameStatus('win'));
+          }
+          // parse results
           // query will return an array of event logs
           // in 90 percent of all cases it should only return one event log
           // but in case it returns multiple logs, use the one with the largest block number
@@ -83,6 +118,22 @@ export const CoinflipActionCreators = {
           console.log(err);
           dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
         }
+      }
+    },
+
+  getWinnings:
+    (amount: number) =>
+    async (dispatch: AppDispatch, getState: () => RootState) => {
+      const store = getState();
+      const contract = coinflipSelectors.selectContract(store);
+      if (contract) {
+        // const amountForFunc = BigNumber.from(amount);
+        console.log(weiToEth(BigNumber.from(String(amount))));
+        const amountToWithdraw = await contract.withdrawFunds(
+          BigNumber.from(String(amount))
+        );
+        dispatch(CoinflipActionCreators.clearGame());
+        console.log(amountToWithdraw.toString());
       }
     },
 };

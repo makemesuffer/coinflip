@@ -7,9 +7,8 @@ import { useActions } from './useActions';
 import { abi } from 'data/abi';
 import { address } from 'data/address';
 
-export default function useContract<T extends Contract = Contract>(
+export default function useContract<T extends Contract = Contract>() {
   // contract: Contract | null
-) {
   // const abi = contract && contract.abi_string.split(contract.abi_delimiter);
   const { library, account, chainId } = useWeb3React();
   const { setContract } = useActions();

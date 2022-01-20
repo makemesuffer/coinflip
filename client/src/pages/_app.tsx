@@ -8,6 +8,8 @@ import { store } from 'store';
 import { getLibrary } from 'utils/getLibrary';
 
 import '../styles/globals.css';
+import '../styles/coins.css';
+import '../styles/alert.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

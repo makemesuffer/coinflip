@@ -13,10 +13,11 @@ import { IUser } from 'store/reducers/app/types';
 import { Dropdown } from 'components/ui/Dropdown';
 import { RecentPlays } from 'components/ui/RecentPlays';
 import { Link } from 'components/common/Link';
+import { AlertDrawer } from 'components/ui/AlertDrawer';
 
 const Header = () => {
   const { theme, user } = useTypedSelector((state) => state.app);
-  const { setThemeCookie } = useActions();
+  const { setThemeCookie, setGameStatus } = useActions();
   const { theme: _theme, setTheme } = useTheme();
   const { deactivate } = useWeb3React();
   const router = useRouter();
@@ -25,8 +26,13 @@ const Header = () => {
   const [selectedValue, setSelectedValue] = useState<string>('recent');
 
   const deactivateAccount = () => {
-    deactivate();
-    setUser({} as IUser);
+    try {
+      deactivate();
+      setUser({} as IUser);
+      setGameStatus('not started');
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const changeTheme = () => {
@@ -49,8 +55,11 @@ const Header = () => {
   });
 
   return (
-    <header className="container p-8">
-      <div className="gap-5 flex flex-row-reverse items-center justify-center md:justify-start">
+    <header className="container md:p-8 p-4">
+      <div>
+        <AlertDrawer />
+      </div>
+      <div className="gap-5 flex flex-row-reverse items-center md:justify-start">
         {user.cashAmount && (
           <label htmlFor="account-modal" className={cardClass}>
             <div className="hidden md:flex items-center px-3 gap-2">

@@ -6,6 +6,7 @@ import { LeaderboardStats } from 'components/ui/LeaderboardStats';
 import { TopGainers } from 'components/ui/TopGainers';
 import useContract from 'hooks/useContract';
 import { IStatsData } from 'models/IStatsData';
+// import { animate } from 'animations/coinflip';
 
 const Leaderboard: NextPage = () => {
   const contract = useContract();
@@ -24,11 +25,13 @@ const Leaderboard: NextPage = () => {
     contract && getValues();
   }, [contract]);
 
+  // animate();
+
   return (
     <Wrapper>
       <div className="flex flex-col justify-between gap-10">
         <div className="max-w-2xl mx-auto">
-          <h3 className="text-center md:text-left text-xl font-extrabold p-2">
+          <h3 className="text-center md:text-left text-2xl font-extrabold p-2">
             Stats
           </h3>
           <LeaderboardStats data={data} />
