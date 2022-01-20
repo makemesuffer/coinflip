@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   const { account, error, activate, setError, active } = useWeb3React();
   const [connecting, setConnecting] = useState(false);
   const { data: etherBalance } = useETHBalance(account);
-  const { setUser, setGameStatus } = useActions();
+  const { setUser, setGameStatus, addBet, getLatest } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const imageRef = useRef<HTMLDivElement>();
   const contract = useContract();
@@ -61,6 +61,10 @@ const Home: NextPage = () => {
       imageRef.current?.style.animation = 'none';
     }
   }, [gameStatus, gameResult]);
+
+  useEffect(() => {
+    getLatest();
+  }, [contract]);
 
   useEffect(() => {
     onboarding.current = new MetaMaskOnboarding();

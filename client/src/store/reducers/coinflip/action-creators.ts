@@ -1,5 +1,7 @@
-import { BigNumber } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { AppDispatch, RootState } from 'store';
+import { address } from 'data/address';
+import { abi } from 'data/abi';
 
 import {
   IContractConnection,
@@ -54,9 +56,36 @@ export const CoinflipActionCreators = {
     payload,
   }),
 
-  filterQuery: () => async (dispatch: AppDispatch) => {
+  getLatest: () => async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
-      console.log('query');
+      const store = getState();
+      let contract = coinflipSelectors.selectContract(store);
+      if (!contract) {
+        // hard-coding rinkeby, not sure how to automatically switch
+        contract = new ethers.Contract(
+          address,
+          abi,
+          ethers.getDefaultProvider('rinkeby')
+        );
+      }
+
+      const filter = contract.filters.playerFlipped();
+      const results = await contract.queryFilter(filter, -1000000, 'latest');
+
+      const sorted = results.sort((a: any, b: any) => {
+        return b.blockNumber - a.blockNumber;
+      });
+      const mapped = sorted.map((i: any) => {
+        return {
+          blockNumber: i.blockNumber,
+          playerAddress: i.args.playerAddress,
+          randomNonce: i.args.randomNonce,
+          headsOrTails: i.args.headsOrTails,
+          didPlayerWin: i.args.amountWon > 0,
+          amountWon: i.args.amountWon,
+        };
+      });
+      return mapped;
     } catch (err) {
       console.log(err);
       dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
