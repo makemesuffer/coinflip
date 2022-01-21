@@ -14,7 +14,7 @@ export type GameStatus =
   | 'loss';
 
 export interface IPlayerBet {
-  bet: BigNumber | number;
+  bet: number;
   side: 0 | 1;
 }
 

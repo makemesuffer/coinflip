@@ -90,13 +90,13 @@ const Header = () => {
             Today
           </Button>
         </div>
-        <Link
+        {/* <Link
           hrefValue={router.pathname === '/leaderboard' ? '/' : '/leaderboard'}
         >
           <Button>
             {router.pathname === '/leaderboard' ? 'Game' : 'Leaderboard'}
           </Button>
-        </Link>
+        </Link> */}
       </div>
       {user.cashAmount && (
         <label htmlFor="account-modal" className="md:hidden px-2 pt-5">

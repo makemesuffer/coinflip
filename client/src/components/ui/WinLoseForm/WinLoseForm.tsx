@@ -5,14 +5,15 @@ import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 import { weiToEth } from 'utils/formatEther';
+import { AlertTypes } from 'store/reducers/alert/types';
 
 interface IWinLoseFormProps {
   win: boolean;
 }
 
 const WinLoseForm: React.FC<IWinLoseFormProps> = ({ win }) => {
-  const { clearGame, getWinnings } = useActions();
-  const { gameResult } = useTypedSelector((state) => state.coinflip);
+  const { clearGame, setAlert } = useActions();
+  const { gameResult, playerBet } = useTypedSelector((state) => state.coinflip);
 
   const textColorClass = classNames('text-center text-xl font-bold mt-2', {
     'text-green-500': win,
@@ -25,17 +26,28 @@ const WinLoseForm: React.FC<IWinLoseFormProps> = ({ win }) => {
         YOU {win ? 'WON!' : 'LOST!'}
       </div>
       <div className={textColorClass}>
-        {weiToEth(BigNumber.from(String(gameResult.winnings)))} MATIC
+        {win
+          ? `${weiToEth(BigNumber.from(String(gameResult.winnings)))} MATIC`
+          : `${playerBet.bet} MATIC`}
       </div>
       <div className="divider" />
       <Button
         additionalClass="w-1/2 block mx-auto"
         onClick={() => {
           if (!win) {
+            setAlert({
+              type: AlertTypes.success,
+              message:
+                'Your reward will be automatically sent after verification!',
+            });
             clearGame();
           } else {
-            // TODO: need help
-            getWinnings(gameResult.winnings);
+            setAlert({
+              type: AlertTypes.success,
+              message:
+                'Your reward will be automatically sent after verification!',
+            });
+            clearGame();
           }
         }}
       >

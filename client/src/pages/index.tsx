@@ -27,11 +27,13 @@ const Home: NextPage = () => {
   const { account, error, activate, setError, active } = useWeb3React();
   const [connecting, setConnecting] = useState(false);
   const { data: etherBalance } = useETHBalance(account);
-  const { setUser, setGameStatus, addBet, getRecent, getTopWins } = useActions();
+  const { setUser, setGameStatus, addBet, getRecent, getTopWins } =
+    useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const imageRef = useRef<HTMLDivElement>();
   const contract = useContract();
 
+  // TODO: transaction mined and verified!
   // const test = async () => {
   //   addBet({ betSize: ethToWei(0.05), side: 1 });
   // };
@@ -63,11 +65,12 @@ const Home: NextPage = () => {
   }, [gameStatus, gameResult]);
 
   useEffect(() => {
-    getTopWins()
-      .then(topWins => {
-        console.log(topWins)
-      });
+    // @ts-ignore
+    getTopWins().then((topWins: any) => {
+      console.log(topWins);
+    });
   }, [contract]);
+  // TODO: hide leaderboards
 
   useEffect(() => {
     onboarding.current = new MetaMaskOnboarding();
