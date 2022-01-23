@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import classNames from 'classnames';
 
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
 import { ethToWei } from 'utils/formatEther';
 import { AlertTypes } from 'store/reducers/alert/types';
-import { AlertDrawer } from '../AlertDrawer';
+import { useTypedSelector } from 'hooks/useTypedSelector';
 
 interface ISelectedValues {
   side: string;
@@ -18,6 +18,7 @@ const BetForm = () => {
   );
   // setGameStatus setPlayerBet
   const { addBet, setAlert } = useActions();
+  const { errors } = useTypedSelector((state) => state.coinflip);
 
   const addFocus = (key: string, value: string) => {
     const valuesToSet = { ...selectedValues, [key]: value };
@@ -26,15 +27,26 @@ const BetForm = () => {
 
   const gameStarter = () => {
     if (selectedValues.side && selectedValues.value) {
-      addBet({
-        betSize: ethToWei(+selectedValues.value),
-        side: selectedValues.side === 'tails' ? 1 : 0,
-      });
+      try {
+        addBet({
+          betSize: ethToWei(+selectedValues.value),
+          side: selectedValues.side === 'tails' ? 1 : 0,
+        });
+      } catch (err: any) {
+        setAlert({ type: AlertTypes.error, message: err.message });
+      }
     } else {
-      console.log('aaa');
       setAlert({ type: AlertTypes.error, message: 'Select all fields' });
     }
   };
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      errors.forEach((error: any) => {
+        setAlert({ type: AlertTypes.error, message: error });
+      });
+    }
+  }, [errors]);
 
   return (
     <div>

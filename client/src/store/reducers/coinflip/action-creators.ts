@@ -167,6 +167,8 @@ export const CoinflipActionCreators = {
 
           dispatch(CoinflipActionCreators.setGameStatus('flipping'));
 
+          dispatch(CoinflipActionCreators.setError([]));
+
           await tx.wait();
 
           const playerAddress = await contract.signer.getAddress();
@@ -197,9 +199,13 @@ export const CoinflipActionCreators = {
           // relevant data is inside the args object (for example if args.amountWon = 0, then player has lost)
           // transaction matching can be refined further by using logEvent.getTransaction()
           // which contains transaction hash and transaction value (amount bet)
-        } catch (err) {
-          console.log(err);
-          dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
+        } catch (err: any) {
+          // AlertsActionCreators.setAlert({
+          //   type: AlertTypes.error,
+          //   message: err.message,
+          // });
+
+          dispatch(CoinflipActionCreators.setError(['Insufficient funds']));
         }
       }
     },

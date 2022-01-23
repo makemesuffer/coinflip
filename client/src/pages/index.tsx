@@ -17,7 +17,7 @@ import { RecentPlaysNoSSR } from 'components/ui/RecentPlays';
 import { WinLoseForm } from 'components/ui/WinLoseForm';
 import { FlippingForm } from 'components/ui/FlippingForm';
 import useContract from 'hooks/useContract';
-import { ethToWei } from 'utils/formatEther';
+import { AlertTypes } from 'store/reducers/alert/types';
 
 const Home: NextPage = () => {
   // const { user } = useTypedSelector((state) => state.app);
@@ -27,16 +27,10 @@ const Home: NextPage = () => {
   const { account, error, activate, setError, active } = useWeb3React();
   const [connecting, setConnecting] = useState(false);
   const { data: etherBalance } = useETHBalance(account);
-  const { setUser, setGameStatus, addBet, getRecent, getTopWins } =
-    useActions();
+  const { setUser, setGameStatus, setAlert, getTopWins } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const imageRef = useRef<HTMLDivElement>();
   const contract = useContract();
-
-  // TODO: transaction mined and verified!
-  // const test = async () => {
-  //   addBet({ betSize: ethToWei(0.05), side: 1 });
-  // };
 
   useEffect(() => {
     if (gameStatus === 'flipping' && Object.keys(gameResult).length === 0) {
@@ -70,7 +64,6 @@ const Home: NextPage = () => {
       console.log(topWins);
     });
   }, [contract]);
-  // TODO: hide leaderboards
 
   useEffect(() => {
     onboarding.current = new MetaMaskOnboarding();
@@ -106,6 +99,7 @@ const Home: NextPage = () => {
       await activate(getConnectors, undefined, true);
       setGameStatus('betting');
     } catch (error: any) {
+      setAlert({ type: AlertTypes.error, message: error.message });
       if (error instanceof UserRejectedRequestError) {
         setConnecting(false);
       } else {
