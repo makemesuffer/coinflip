@@ -155,6 +155,7 @@ export const CoinflipActionCreators = {
           const startBlock = await contract.provider.getBlockNumber(); // set current block number as starting block for query
           const tx = await contract.flip(side, {
             value: betSize.toString(),
+            gasLimit: 300000
           });
 
           dispatch(
