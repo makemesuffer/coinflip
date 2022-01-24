@@ -1,8 +1,8 @@
 import { ethers, BigNumber } from 'ethers';
+
 import { AppDispatch, RootState } from 'store';
 import { address } from 'data/address';
 import { abi } from 'data/abi';
-
 import {
   IContractConnection,
   SetContractAction,
@@ -37,24 +37,11 @@ export const CoinflipActionCreators = {
     payload,
   }),
 
-  //   getPrize:
-  //     ({ gameId }: { gameId: number | undefined }) =>
-  //     async (dispatch: AppDispatch, getState: () => RootState) => {
-  //       if (gameId) {
-  //         const contract = coinflipSelector.selectContract(getState());
-  //         const amountToWithdraw = await contract.getAmountToWithdraw(gameId);
-  //         console.log(amountToWithdraw.toString());
-  //         const win = await contract.withdrawWin(gameId);
-  //         console.log(win);
-  //       }
-  //     },
-
   getRecent: () => async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       const store = getState();
       let contract = coinflipSelectors.selectContract(store);
       if (!contract) {
-        // hard-coding rinkeby, not sure how to automatically switch
         contract = new ethers.Contract(
           address,
           abi,
@@ -82,7 +69,6 @@ export const CoinflipActionCreators = {
         .slice(0, 20);
       return mapped;
     } catch (err) {
-      console.log(err);
       dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
     }
   },
@@ -112,7 +98,6 @@ export const CoinflipActionCreators = {
         const store = getState();
         let contract = coinflipSelectors.selectContract(store);
         if (!contract) {
-          // hard-coding rinkeby, not sure how to automatically switch
           contract = new ethers.Contract(
             address,
             abi,
@@ -140,7 +125,6 @@ export const CoinflipActionCreators = {
           .slice(0, 20);
         return mapped;
       } catch (err) {
-        console.log(err);
         dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
       }
     },
@@ -152,10 +136,10 @@ export const CoinflipActionCreators = {
       const contract = coinflipSelectors.selectContract(store);
       if (contract) {
         try {
-          const startBlock = await contract.provider.getBlockNumber(); // set current block number as starting block for query
+          const startBlock = await contract.provider.getBlockNumber();
           const tx = await contract.flip(side, {
             value: betSize.toString(),
-            gasLimit: 300000
+            gasLimit: 300000,
           });
 
           dispatch(
@@ -182,8 +166,6 @@ export const CoinflipActionCreators = {
             'latest'
           );
 
-          console.log(query);
-
           const parsedQuery = parseQuery(query[length].args);
           dispatch(CoinflipActionCreators.setGameResult(parsedQuery));
           if (parsedQuery.winnings === 0) {
@@ -191,20 +173,7 @@ export const CoinflipActionCreators = {
           } else {
             dispatch(CoinflipActionCreators.setGameStatus('win'));
           }
-
-          // parse results
-          // query will return an array of event logs
-          // in 90 percent of all cases it should only return one event log
-          // but in case it returns multiple logs, use the one with the largest block number
-          // relevant data is inside the args object (for example if args.amountWon = 0, then player has lost)
-          // transaction matching can be refined further by using logEvent.getTransaction()
-          // which contains transaction hash and transaction value (amount bet)
         } catch (err: any) {
-          // AlertsActionCreators.setAlert({
-          //   type: AlertTypes.error,
-          //   message: err.message,
-          // });
-
           dispatch(CoinflipActionCreators.setError(['Insufficient funds']));
         }
       }

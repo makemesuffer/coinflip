@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import { Contract } from '@ethersproject/contracts';
-import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
 import { useActions } from './useActions';
@@ -8,19 +7,23 @@ import { abi } from 'data/abi';
 import { address } from 'data/address';
 
 export default function useContract<T extends Contract = Contract>() {
-  // contract: Contract | null
-  // const abi = contract && contract.abi_string.split(contract.abi_delimiter);
-  const { library, account, chainId } = useWeb3React();
   const { setContract } = useActions();
+  //  || !library || !chainId
 
   return useMemo(() => {
-    if (!address || !abi || !library || !chainId) {
+    if (!address || !abi) {
       return null;
     }
 
     try {
       const ABI = new ethers.utils.Interface(abi);
-      const contract = new Contract(address, ABI, library.getSigner(account));
+      // ethers.getDefaultProvider('rinkeby')
+      // library.getSigner(account)
+      const contract = new Contract(
+        address,
+        ABI,
+        ethers.getDefaultProvider('rinkeby')
+      );
       setContract({ connected: true, contract });
       return contract;
     } catch (error) {
@@ -28,5 +31,5 @@ export default function useContract<T extends Contract = Contract>() {
 
       return null;
     }
-  }, [address, abi, library, account]) as T;
+  }, [address, abi]) as T;
 }

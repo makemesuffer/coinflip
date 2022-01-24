@@ -1,5 +1,8 @@
 const TopGainers: React.FC = () => {
     // TODO: array 
+    // TODO: matic smart recon
+    // TODO: parsing everything
+    // TODO: cleanup
   return (
     <div className="overflow-x-auto">
       <table className="table w-full">

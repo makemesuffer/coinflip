@@ -18,16 +18,26 @@ import { WinLoseForm } from 'components/ui/WinLoseForm';
 import { FlippingForm } from 'components/ui/FlippingForm';
 import useContract from 'hooks/useContract';
 import { AlertTypes } from 'store/reducers/alert/types';
+import { parseGames } from 'utils/parseGames';
+import { Loader } from 'components/common/Loader';
 
 const Home: NextPage = () => {
-  // const { user } = useTypedSelector((state) => state.app);
+  const { theme } = useTypedSelector((state) => state.app);
   const { gameStatus, playerBet, gameResult } = useTypedSelector(
     (state) => state.coinflip
   );
   const { account, error, activate, setError, active } = useWeb3React();
   const [connecting, setConnecting] = useState(false);
   const { data: etherBalance } = useETHBalance(account);
-  const { setUser, setGameStatus, setAlert, getTopWins } = useActions();
+  const {
+    setUser,
+    setGameStatus,
+    setAlert,
+    getTopWins,
+    getRecent,
+    setRecentPlays,
+    setTopWins,
+  } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const imageRef = useRef<HTMLDivElement>();
   const contract = useContract();
@@ -43,7 +53,6 @@ const Home: NextPage = () => {
     ) {
       // @ts-ignore
       imageRef.current?.style.animation = 'spin-heads 3s forwards';
-      console.log(gameResult);
     } else if (
       gameStatus === 'flipping' &&
       Object.keys(gameResult).length === 1 &&
@@ -51,7 +60,6 @@ const Home: NextPage = () => {
     ) {
       // @ts-ignore
       imageRef.current?.style.animation = 'spin-tails 3s forwards';
-      console.log(gameResult);
     } else {
       // @ts-ignore
       imageRef.current?.style.animation = 'none';
@@ -61,7 +69,14 @@ const Home: NextPage = () => {
   useEffect(() => {
     // @ts-ignore
     getTopWins().then((topWins: any) => {
-      console.log(topWins);
+      const tw = parseGames(topWins);
+      setTopWins(tw);
+    });
+
+    // @ts-ignore
+    getRecent().then((recentGames: any) => {
+      const rg = parseGames(recentGames);
+      setRecentPlays(rg);
     });
   }, [contract]);
 
@@ -72,7 +87,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (active || error) {
       if (error) {
-        // showErrorMessage(error.message);
+        setAlert({ type: AlertTypes.error, message: error.message });
       }
       setConnecting(false);
       onboarding.current?.stopOnboarding();
@@ -123,7 +138,11 @@ const Home: NextPage = () => {
             </Button>
           </div>
           <h5 className="text-center text-xl font-bold pb-7">RECENT PLAYS:</h5>
-          <RecentPlaysNoSSR />
+          {contract ? (
+            <RecentPlaysNoSSR flag={'recent'} />
+          ) : (
+            <Loader theme={theme} />
+          )}
         </div>
       );
     } else if (gameStatus === 'betting') {
@@ -136,6 +155,7 @@ const Home: NextPage = () => {
       return <WinLoseForm win={false} />;
     }
   }, [gameStatus]);
+
   return (
     <Wrapper>
       <div className="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 flex-1">
@@ -167,36 +187,5 @@ const Home: NextPage = () => {
     </Wrapper>
   );
 };
-
-//  {
-//    !user.account ? (
-//      <div>
-//        <div className="flex justify-center pb-7">
-//          <Button
-//            isLoading={connecting}
-//            onClick={() => {
-//              handleConnectWallet();
-//            }}
-//          >
-//            Connect Metamask
-//          </Button>
-//        </div>
-//        <h5 className="text-center text-xl font-bold pb-7">RECENT PLAYS:</h5>
-//        <RecentPlaysNoSSR />
-//      </div>
-//    ) : (
-//      <>
-//        {/* <Button
-//                 isLoading={connecting}
-//                 onClick={() => {
-//                   test();
-//                 }}
-//               >
-//                 Test Contract
-//               </Button> */}
-//        <BetForm />
-//      </>
-//    );
-//  }
 
 export default Home;

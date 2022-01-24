@@ -2,7 +2,6 @@ import { useTheme } from 'next-themes';
 import classNames from 'classnames';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
@@ -11,28 +10,23 @@ import { Identicon } from 'components/common/Identicon';
 import { Modal } from 'components/common/Modal';
 import { IUser } from 'store/reducers/app/types';
 import { Dropdown } from 'components/ui/Dropdown';
-import { RecentPlays } from 'components/ui/RecentPlays';
-import { Link } from 'components/common/Link';
 import { AlertDrawer } from 'components/ui/AlertDrawer';
+import { RecentPlaysNoSSR } from 'components/ui/RecentPlays';
 
 const Header = () => {
-  const { theme, user } = useTypedSelector((state) => state.app);
-  const { setThemeCookie, setGameStatus } = useActions();
+  const { theme, user, flag } = useTypedSelector((state) => state.app);
+  const { setThemeCookie, setGameStatus, setFlag } = useActions();
   const { theme: _theme, setTheme } = useTheme();
   const { deactivate } = useWeb3React();
-  const router = useRouter();
   const { setUser } = useActions();
   const [showMobileToday, setShowMobileToday] = useState<boolean>(false);
-  const [selectedValue, setSelectedValue] = useState<string>('recent');
 
   const deactivateAccount = () => {
     try {
       deactivate();
       setUser({} as IUser);
       setGameStatus('not started');
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const changeTheme = () => {
@@ -56,7 +50,7 @@ const Header = () => {
 
   return (
     <header className="container md:p-8 p-4">
-      <div>
+      <div className="hidden md:block">
         <AlertDrawer />
       </div>
       <div className="gap-5 flex flex-row-reverse items-center md:justify-start">
@@ -83,20 +77,13 @@ const Header = () => {
           {theme}
         </Button>
         <div className="hidden md:block">
-          <Dropdown items={[]} />
+          <Dropdown />
         </div>
         <div className="block md:hidden">
           <Button onClick={() => setShowMobileToday(!showMobileToday)}>
             Today
           </Button>
         </div>
-        {/* <Link
-          hrefValue={router.pathname === '/leaderboard' ? '/' : '/leaderboard'}
-        >
-          <Button>
-            {router.pathname === '/leaderboard' ? 'Game' : 'Leaderboard'}
-          </Button>
-        </Link> */}
       </div>
       {user.cashAmount && (
         <label htmlFor="account-modal" className="md:hidden px-2 pt-5">
@@ -131,11 +118,11 @@ const Header = () => {
             </div>
           </div>
           <div className="mt-2 flex flex-col divide-y w-full text-center">
-            <h5 className="text-xl font-bold py-2">Statistics</h5>
+            <h5 className="text-xl font-bold py-2">Your Recent Flips</h5>
             <p className="text-md py-2">Need to think of...</p>
           </div>
         </div>
-        <div className="modal-action">
+        <div className="modal-action pb-3">
           <label
             className="btn btn-primary btn-sm lg:btn-md w-1/2"
             htmlFor="account-modal"
@@ -157,22 +144,22 @@ const Header = () => {
             <div className="grid grid-cols-2 items-center gap-3 p-2">
               <Button
                 additionalClass={
-                  selectedValue === 'recent' ? 'btn-active' : 'btn-outline'
+                  flag === 'recent' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => setSelectedValue('recent')}
+                onClick={() => setFlag('recent')}
               >
                 Recent
               </Button>
               <Button
                 additionalClass={
-                  selectedValue === 'top wins' ? 'btn-active' : 'btn-outline'
+                  flag === 'top wins' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => setSelectedValue('top wins')}
+                onClick={() => setFlag('top wins')}
               >
                 Top Wins
               </Button>
             </div>
-            <RecentPlays />
+            <RecentPlaysNoSSR flag={flag} />
           </ul>
         )}
       </div>
