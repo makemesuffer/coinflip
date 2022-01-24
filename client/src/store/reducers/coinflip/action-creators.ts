@@ -73,6 +73,44 @@ export const CoinflipActionCreators = {
     }
   },
 
+  getMyRecent: () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    try {
+      const store = getState();
+      let contract = coinflipSelectors.selectContract(store);
+      if (!contract) {
+        contract = new ethers.Contract(
+          address,
+          abi,
+          ethers.getDefaultProvider('rinkeby')
+        );
+      }
+
+      const playerAddress = window.ethereum.selectedAddress;
+
+      const filter = contract.filters.playerFlipped(null, playerAddress);
+      const results = await contract.queryFilter(filter, -1000000, 'latest');
+
+      const sorted = results.sort((a: any, b: any) => {
+        return b.blockNumber - a.blockNumber;
+      });
+      const mapped = sorted
+        .map((i: any) => {
+          return {
+            blockNumber: i.blockNumber,
+            playerAddress: i.args.playerAddress,
+            randomNonce: i.args.randomNonce,
+            headsOrTails: i.args.headsOrTails,
+            didPlayerWin: i.args.amountWon > 0,
+            amountWon: i.args.amountWon,
+          };
+        })
+        .slice(0, 20);
+      return mapped;
+    } catch (err) {
+      dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
+    }
+  },
+
   setGameStatus: (payload: GameStatus): SetGameStatusAction => ({
     type: CoinflipActionEnum.SET_GAME_STATUS,
     payload,
