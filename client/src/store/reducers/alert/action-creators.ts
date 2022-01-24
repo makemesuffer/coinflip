@@ -2,7 +2,7 @@ import { AppDispatch } from 'store';
 import { v4 as uuidv4 } from 'uuid';
 import { AlertsActionEnum, AlertsAction, AlertPayload } from './types';
 
-const DEFAULT_ALERT_LIFESPAN = 10;
+const DEFAULT_ALERT_LIFESPAN = 5;
 
 export const AlertsActionCreators = {
   setAlertAction: (payload: AlertPayload): AlertsAction => ({

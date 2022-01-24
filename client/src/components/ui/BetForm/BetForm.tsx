@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
-import { ethToWei } from 'utils/formatEther';
+import { ethToMatic, ethToWei } from 'utils/formatEther';
 import { AlertTypes } from 'store/reducers/alert/types';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 
@@ -16,7 +16,6 @@ const BetForm = () => {
   const [selectedValues, setSelectedValues] = useState<ISelectedValues>(
     {} as ISelectedValues
   );
-  // setGameStatus setPlayerBet
   const { addBet, setAlert } = useActions();
   const { errors } = useTypedSelector((state) => state.coinflip);
 
@@ -33,6 +32,7 @@ const BetForm = () => {
           side: selectedValues.side === 'tails' ? 1 : 0,
         });
       } catch (err: any) {
+        console.log(ethToWei(+selectedValues.value));
         setAlert({ type: AlertTypes.error, message: err.message });
       }
     } else {
@@ -78,7 +78,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.01')}
           >
-            0.01 MATIC
+            {ethToMatic(0.01)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -86,7 +86,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.05')}
           >
-            0.05 MATIC
+            {ethToMatic(0.05)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -94,7 +94,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.1')}
           >
-            0.1 MATIC
+            {ethToMatic(0.1)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -102,7 +102,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.25')}
           >
-            0.25 MATIC
+            {ethToMatic(0.25)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -110,7 +110,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.5')}
           >
-            0.5 MATIC
+            {ethToMatic(0.5)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -118,7 +118,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '1')}
           >
-            1 MATIC
+            {ethToMatic(1)} MATIC
           </Button>
         </div>
         <Button additionalClass="p-2" onClick={gameStarter}>

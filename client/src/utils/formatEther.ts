@@ -1,8 +1,16 @@
 import { formatEther, parseEther } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
 
-export const weiToEth = (wei: BigNumber | number) => formatEther(wei);
+// In a future it will be better to use api to fetch all the recent exchange rates. Need to think about it
+const ONE_ETHER_IN_MATIC = 1623.76;
+
+export const weiToEth = (wei: BigNumber) => formatEther(wei);
 
 export const ethToWei = (eth: number): BigNumber => parseEther(`${eth}`);
 
-// export const ethToMatic = ()
+export const ethToMatic = (eth: number) => (ONE_ETHER_IN_MATIC * eth).toFixed(2);
+
+export const weiToMatic = (wei: BigNumber | number) => {
+  const eth = formatEther(wei);
+  return ethToMatic(+eth);
+};

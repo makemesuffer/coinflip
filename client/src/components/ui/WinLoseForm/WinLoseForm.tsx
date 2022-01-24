@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
 import { useTypedSelector } from 'hooks/useTypedSelector';
-import { weiToEth } from 'utils/formatEther';
+import { ethToMatic, weiToMatic } from 'utils/formatEther';
 import { AlertTypes } from 'store/reducers/alert/types';
 
 interface IWinLoseFormProps {
@@ -27,19 +27,14 @@ const WinLoseForm: React.FC<IWinLoseFormProps> = ({ win }) => {
       </div>
       <div className={textColorClass}>
         {win
-          ? `${weiToEth(BigNumber.from(String(gameResult.winnings)))} MATIC`
-          : `${playerBet.bet} MATIC`}
+          ? `${weiToMatic(BigNumber.from(String(gameResult.winnings)))} MATIC`
+          : `${ethToMatic(playerBet.bet)} MATIC`}
       </div>
       <div className="divider" />
       <Button
         additionalClass="w-1/2 block mx-auto"
         onClick={() => {
           if (!win) {
-            setAlert({
-              type: AlertTypes.success,
-              message:
-                'Your reward will be automatically sent after verification!',
-            });
             clearGame();
           } else {
             setAlert({

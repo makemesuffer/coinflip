@@ -6,5 +6,4 @@ export const parseQuery = (query: any): IGameResult => {
     winnings: Number(query[2]),
     headOrTails: Number(query[5]) === 0 ? 'HEADS' : 'TAILS',
   };
-  //emit playerFlipped(_randNonce, msg.sender, winnings, commission, amountToSend, headsOrTails, number
 };
