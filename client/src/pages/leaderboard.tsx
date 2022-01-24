@@ -6,7 +6,6 @@ import { LeaderboardStats } from 'components/ui/LeaderboardStats';
 import { TopGainers } from 'components/ui/TopGainers';
 import useContract from 'hooks/useContract';
 import { IStatsData } from 'models/IStatsData';
-// import { animate } from 'animations/coinflip';
 
 const Leaderboard: NextPage = () => {
   const contract = useContract();
@@ -48,11 +47,5 @@ const Leaderboard: NextPage = () => {
     </Wrapper>
   );
 };
-
-{
-  /* <div className="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 flex-1">
-  <div className="w-full space-y-8 max-w-2xl"></div>
-</div>; */
-}
 
 export default Leaderboard;

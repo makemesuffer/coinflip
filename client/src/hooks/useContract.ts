@@ -10,7 +10,6 @@ import { address } from 'data/address';
 export default function useContract<T extends Contract = Contract>() {
   const { setContract } = useActions();
   const { library, chainId, account } = useWeb3React();
-  //  || !library || !chainId
 
   return useMemo(() => {
     if (!address || !abi) {
