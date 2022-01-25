@@ -78,7 +78,7 @@ const Header = () => {
             Today
           </Button>
         </div>
-        <Button>Leaderboard</Button>
+        {/* <Button>Leaderboard</Button> */}
       </div>
       {user.cashAmount && (
         <label htmlFor="account-modal" className="md:hidden px-2 pt-5">
