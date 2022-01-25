@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 
 import { Button } from 'components/common/Button';
+import { useActions } from 'hooks/useActions';
+import { ethToMatic, ethToWei } from 'utils/formatEther';
+import { AlertTypes } from 'store/reducers/alert/types';
+import { useTypedSelector } from 'hooks/useTypedSelector';
 
 interface ISelectedValues {
   side: string;
@@ -12,11 +15,37 @@ const BetForm = () => {
   const [selectedValues, setSelectedValues] = useState<ISelectedValues>(
     {} as ISelectedValues
   );
+  const { addBet, setAlert } = useActions();
+  const { errors } = useTypedSelector((state) => state.coinflip);
 
   const addFocus = (key: string, value: string) => {
     const valuesToSet = { ...selectedValues, [key]: value };
     setSelectedValues(valuesToSet);
   };
+
+  const gameStarter = () => {
+    if (selectedValues.side && selectedValues.value) {
+      try {
+        addBet({
+          betSize: ethToWei(+selectedValues.value),
+          side: selectedValues.side === 'tails' ? 1 : 0,
+        });
+      } catch (err: any) {
+        console.log(ethToWei(+selectedValues.value));
+        setAlert({ type: AlertTypes.error, message: err.message });
+      }
+    } else {
+      setAlert({ type: AlertTypes.error, message: 'Select all fields' });
+    }
+  };
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      errors.forEach((error: any) => {
+        setAlert({ type: AlertTypes.error, message: error });
+      });
+    }
+  }, [errors]);
 
   return (
     <div>
@@ -48,7 +77,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.01')}
           >
-            0.01 ETH
+            {ethToMatic(0.01)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -56,7 +85,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.05')}
           >
-            0.05 ETH
+            {ethToMatic(0.05)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -64,7 +93,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.1')}
           >
-            0.1 ETH
+            {ethToMatic(0.1)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -72,7 +101,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.25')}
           >
-            0.25 ETH
+            {ethToMatic(0.25)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -80,7 +109,7 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '0.5')}
           >
-            0.5 ETH
+            {ethToMatic(0.5)} MATIC
           </Button>
           <Button
             additionalClass={
@@ -88,10 +117,12 @@ const BetForm = () => {
             }
             onClick={() => addFocus('value', '1')}
           >
-            1 ETH
+            {ethToMatic(1)} MATIC
           </Button>
         </div>
-        <Button additionalClass="p-2">DOUBLE OR NOTHING</Button>
+        <Button additionalClass="p-2" onClick={gameStarter}>
+          DOUBLE OF NOTHING
+        </Button>
       </div>
     </div>
   );

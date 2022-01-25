@@ -1,10 +1,14 @@
 import { CookieTool } from 'tools';
 
-import { AppAction, AppActionEnum, AppState, IUser } from './types';
+import { AppAction, AppActionEnum, AppState, IPlays, IUser } from './types';
 
 const initialState: AppState = {
-  theme: CookieTool.getCookie('theme') || 'dark',
+  theme:
+    (CookieTool.getCookie('theme') as 'light' | 'dark' | 'cyberpunk') || 'dark',
   user: {} as IUser,
+  recentPlays: [] as IPlays[],
+  topPlayers: [] as IPlays[],
+  flag: 'recent',
 };
 
 export default function appReducer(
@@ -16,6 +20,12 @@ export default function appReducer(
       return { ...state, theme: action.payload };
     case AppActionEnum.SET_USER:
       return { ...state, user: action.payload };
+    case AppActionEnum.SET_RECENT_PLAYS:
+      return { ...state, recentPlays: action.payload };
+    case AppActionEnum.SET_TOP_PLAYERS:
+      return { ...state, topPlayers: action.payload };
+    case AppActionEnum.SET_FLAG:
+      return { ...state, flag: action.payload };
     case AppActionEnum.CLEAR_USER:
       return { ...state, user: {} as IUser };
     default:

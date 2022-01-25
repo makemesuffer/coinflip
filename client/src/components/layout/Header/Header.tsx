@@ -10,20 +10,24 @@ import { Identicon } from 'components/common/Identicon';
 import { Modal } from 'components/common/Modal';
 import { IUser } from 'store/reducers/app/types';
 import { Dropdown } from 'components/ui/Dropdown';
-import { RecentPlays } from 'components/ui/RecentPlays';
+import { AlertDrawer } from 'components/ui/AlertDrawer';
+import { RecentPlaysNoSSR } from 'components/ui/RecentPlays';
+import { ethToMatic } from 'utils/formatEther';
 
 const Header = () => {
-  const { theme, user } = useTypedSelector((state) => state.app);
-  const { setThemeCookie } = useActions();
+  const { theme, user, flag } = useTypedSelector((state) => state.app);
+  const { setThemeCookie, setGameStatus, setFlag } = useActions();
   const { theme: _theme, setTheme } = useTheme();
   const { deactivate } = useWeb3React();
   const { setUser } = useActions();
-  const [showMobileToday, setShowMobileToday] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string>('recent');
+  const [showMobileToday, setShowMobileToday] = useState<boolean>(false);
 
   const deactivateAccount = () => {
-    deactivate();
-    setUser({} as IUser);
+    try {
+      deactivate();
+      setUser({} as IUser);
+      setGameStatus('not started');
+    } catch (err) {}
   };
 
   const changeTheme = () => {
@@ -46,8 +50,11 @@ const Header = () => {
   });
 
   return (
-    <header className="container p-8">
-      <div className="gap-5 flex flex-row-reverse items-center justify-center md:justify-start">
+    <header className="container md:p-8 p-4">
+      <div className="hidden md:block">
+        <AlertDrawer />
+      </div>
+      <div className="gap-5 flex flex-row-reverse items-center md:justify-start">
         {user.cashAmount && (
           <label htmlFor="account-modal" className={cardClass}>
             <div className="hidden md:flex items-center px-3 gap-2">
@@ -58,7 +65,7 @@ const Header = () => {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
-                <p className="text-sm ml-auto">{user.cashAmount} ETH</p>
+                <p className="text-sm ml-auto">{ethToMatic(user.cashAmount)} MATIC</p>
               </div>
             </div>
           </label>
@@ -71,14 +78,13 @@ const Header = () => {
           {theme}
         </Button>
         <div className="hidden md:block">
-          <Dropdown items={[]} />
+          <Dropdown />
         </div>
         <div className="block md:hidden">
           <Button onClick={() => setShowMobileToday(!showMobileToday)}>
             Today
           </Button>
         </div>
-        {/* <Button>Leaderboard</Button> */}
       </div>
       {user.cashAmount && (
         <label htmlFor="account-modal" className="md:hidden px-2 pt-5">
@@ -91,7 +97,7 @@ const Header = () => {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
-                <p className="text-sm ml-auto">{user.cashAmount} ETH</p>
+                <p className="text-sm ml-auto">{ethToMatic(user.cashAmount)} MATIC</p>
               </div>
             </div>
           </div>
@@ -109,15 +115,15 @@ const Header = () => {
             </div>
             <div className="flex flex-col text-center md:w-1/3 w-9/12 mx-auto">
               <h5 className="text-xl font-bold py-1">Balance:</h5>
-              <p className="text-md">{user.cashAmount} ETH</p>
+              <p className="text-md">{ethToMatic(user.cashAmount)} MATIC</p>
             </div>
           </div>
           <div className="mt-2 flex flex-col divide-y w-full text-center">
-            <h5 className="text-xl font-bold py-2">Statistics</h5>
+            <h5 className="text-xl font-bold py-2">Your Recent Flips</h5>
             <p className="text-md py-2">Need to think of...</p>
           </div>
         </div>
-        <div className="modal-action">
+        <div className="modal-action pb-3">
           <label
             className="btn btn-primary btn-sm lg:btn-md w-1/2"
             htmlFor="account-modal"
@@ -139,22 +145,22 @@ const Header = () => {
             <div className="grid grid-cols-2 items-center gap-3 p-2">
               <Button
                 additionalClass={
-                  selectedValue === 'recent' ? 'btn-active' : 'btn-outline'
+                  flag === 'recent' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => setSelectedValue('recent')}
+                onClick={() => setFlag('recent')}
               >
                 Recent
               </Button>
               <Button
                 additionalClass={
-                  selectedValue === 'top wins' ? 'btn-active' : 'btn-outline'
+                  flag === 'top wins' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => setSelectedValue('top wins')}
+                onClick={() => setFlag('top wins')}
               >
                 Top Wins
               </Button>
             </div>
-            <RecentPlays />
+            <RecentPlaysNoSSR flag={flag} />
           </ul>
         )}
       </div>

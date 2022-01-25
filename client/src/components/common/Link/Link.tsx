@@ -13,7 +13,12 @@ const Link: React.FC<LinkProps> = ({
   ...props
 }) => (
   <NextLink href={hrefValue}>
-    <a className={primary ? 'link link-primary' : 'link'} {...props}>
+    <a
+      className={
+        primary ? 'link link-primary no-underline' : 'link no-underline'
+      }
+      {...props}
+    >
       {children}
     </a>
   </NextLink>

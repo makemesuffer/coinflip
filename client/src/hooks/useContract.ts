@@ -1,22 +1,35 @@
 import { ethers } from 'ethers';
 import { Contract } from '@ethersproject/contracts';
-import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
+import { useWeb3React } from '@web3-react/core';
 
 import { useActions } from './useActions';
+import { abi } from 'data/abi';
+import { address } from 'data/address';
 
-export default function useContract<T extends Contract = Contract>(
-  contract: Contract | null
-) {
-  const abi = contract && contract.abi_string.split(contract.abi_delimiter);
-  const address =
-    contract?.address || '0xb32c83b93a52db7067fa382818f8e830c5644b61';
-  const { library, account, chainId } = useWeb3React();
+export default function useContract<T extends Contract = Contract>() {
   const { setContract } = useActions();
+  const { library, chainId, account } = useWeb3React();
 
   return useMemo(() => {
-    if (!address || !abi || !library || !chainId) {
+    if (!address || !abi) {
       return null;
+    }
+
+    if (!library || !chainId) {
+      try {
+        const ABI = new ethers.utils.Interface(abi);
+        const contract = new Contract(
+          address,
+          ABI,
+          ethers.getDefaultProvider('rinkeby')
+        );
+        setContract({ connected: true, contract });
+        return contract;
+      } catch (error) {
+        console.error('Failed To Get Contract', error);
+        return null;
+      }
     }
 
     try {
@@ -26,8 +39,7 @@ export default function useContract<T extends Contract = Contract>(
       return contract;
     } catch (error) {
       console.error('Failed To Get Contract', error);
-
       return null;
     }
-  }, [address, abi, library, account]) as T;
+  }, [address, abi, chainId, library]) as T;
 }

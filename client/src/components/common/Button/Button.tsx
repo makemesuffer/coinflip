@@ -7,8 +7,6 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   isLoading?: boolean;
 };
 
-// w-full
-
 const Button: React.FC<ButtonProps> = ({
   children,
   additionalClass,

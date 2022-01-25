@@ -1,10 +1,19 @@
 import classNames from 'classnames';
-import { Identicon } from 'components/common/Identicon';
-import { recentPlays } from 'data/recentPlaysDumb';
-import { useTypedSelector } from 'hooks/useTypedSelector';
+import { useMemo } from 'react';
 
-const RecentPlays = () => {
-  const { theme } = useTypedSelector((state) => state.app);
+import { Identicon } from 'components/common/Identicon';
+import { useTypedSelector } from 'hooks/useTypedSelector';
+import { IPlays } from 'store/reducers/app/types';
+import { Loader } from 'components/common/Loader';
+
+interface IRecentPlays {
+  flag: 'top wins' | 'recent';
+}
+
+const RecentPlays: React.FC<IRecentPlays> = ({ flag }) => {
+  const { theme, topPlayers, recentPlays } = useTypedSelector(
+    (state) => state.app
+  );
 
   const cardClass = classNames('card card-bordered cursor-pointer', {
     'hover:bg-slate-700': theme === 'dark',
@@ -12,22 +21,53 @@ const RecentPlays = () => {
     'hover:bg-yellow-300': theme === 'cyberpunk',
   });
 
-  return (
-    <div className="text-center flex flex-col gap-1">
-      {recentPlays.map((recentPlay: any) => (
-        <div className={cardClass} key={recentPlay.address}>
-          <div className="flex px-3 items-center gap-5">
-            <Identicon address={recentPlay.address} />
-            <p className="text-sm">
-              Wallet {recentPlay.address.slice(2, 6)} bet {recentPlay.value} and{' '}
-              {recentPlay.win ? 'doubled their money' : 'got rugged'}.
-            </p>
-            <p className="text-xs ml-auto self-end pb-1">{recentPlay.time}</p>
-          </div>
+  const content = useMemo(() => {
+    if (flag === 'top wins' && topPlayers) {
+      return (
+        <div className="grid grid-cols-1">
+          {topPlayers.slice(0, 10).map((play: IPlays) => (
+            <div className={cardClass} key={play.blockNumber}>
+              <div className="flex px-3 items-center gap-5">
+                <Identicon address={play.playerAddress} />
+                <p className="text-sm">
+                  Wallet ({play.playerAddress.slice(2, 6)}) bet on{' '}
+                  {play.headsOrTails === 1 ? 'TAILS' : 'HEADS'} and won{' '}
+                  {play.amountWon}.
+                </p>
+                <p className="text-xs ml-auto self-end pb-1">
+                  {/* {recentPlay.blockNumber} */}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  );
+      );
+    } else if (flag === 'recent' && recentPlays) {
+      return (
+        <>
+          {recentPlays.slice(0, 10).map((play: IPlays) => (
+            <div className={cardClass} key={play.blockNumber}>
+              <div className="flex px-3 items-center gap-5">
+                <Identicon address={play.playerAddress} />
+                <p className="text-sm">
+                  Wallet ({play.playerAddress.slice(2, 6)}) bet on{' '}
+                  {play.headsOrTails === 1 ? 'TAILS' : 'HEADS'} and{' '}
+                  {play.didPlayerWin ? 'doubled their money' : 'got rugged'}.
+                </p>
+                <p className="text-xs ml-auto self-end pb-1">
+                  {/* {recentPlay.blockNumber} */}
+                </p>
+              </div>
+            </div>
+          ))}
+        </>
+      );
+    } else {
+      return <Loader theme={theme} />;
+    }
+  }, [flag, topPlayers, recentPlays]);
+
+  return content;
 };
 
 export default RecentPlays;

@@ -1,17 +1,15 @@
-import { HTMLProps, useState } from 'react';
-
 import { Button } from 'components/common/Button';
 import { RecentPlays } from '../RecentPlays';
 
-type DropdownProps = HTMLProps<HTMLDivElement> & {
-  items: any[];
-};
+import { useTypedSelector } from 'hooks/useTypedSelector';
+import { useActions } from 'hooks/useActions';
 
-const Dropdown: React.FC<DropdownProps> = ({ items, ...props }) => {
-  const [selectedValue, setSelectedValue] = useState<string>('recent');
+const Dropdown: React.FC = () => {
+  const { flag } = useTypedSelector((state) => state.app);
+  const { setFlag } = useActions();
 
   return (
-    <div className="dropdown dropdown-end" {...props}>
+    <div className="dropdown dropdown-end">
       <Button>Today</Button>
       <ul
         tabIndex={0}
@@ -19,23 +17,19 @@ const Dropdown: React.FC<DropdownProps> = ({ items, ...props }) => {
       >
         <div className="grid grid-cols-2 items-center gap-3 p-2">
           <Button
-            additionalClass={
-              selectedValue === 'recent' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => setSelectedValue('recent')}
+            additionalClass={flag === 'recent' ? 'btn-active' : 'btn-outline'}
+            onClick={() => setFlag('recent')}
           >
             Recent
           </Button>
           <Button
-            additionalClass={
-              selectedValue === 'top wins' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => setSelectedValue('top wins')}
+            additionalClass={flag === 'top wins' ? 'btn-active' : 'btn-outline'}
+            onClick={() => setFlag('top wins')}
           >
             Top Wins
           </Button>
         </div>
-        <RecentPlays />
+        <RecentPlays flag={flag} />
       </ul>
     </div>
   );
