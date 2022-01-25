@@ -114,7 +114,7 @@ const Home: NextPage = () => {
       await activate(getConnectors, undefined, true);
       setGameStatus('betting');
     } catch (error: any) {
-      setAlert({ type: AlertTypes.error, message: error.message });
+      
       if (error instanceof UserRejectedRequestError) {
         setConnecting(false);
       } else {
