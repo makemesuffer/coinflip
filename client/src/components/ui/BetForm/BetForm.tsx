@@ -91,7 +91,7 @@ const BetForm = () => {
             1 ETH
           </Button>
         </div>
-        <Button additionalClass="p-2">DOUBLE OF NOTHING</Button>
+        <Button additionalClass="p-2">DOUBLE OR NOTHING</Button>
       </div>
     </div>
   );
