@@ -18,6 +18,7 @@ export interface AppState {
   recentPlays: IPlays[];
   topPlayers: IPlays[];
   flag: 'recent' | 'top wins';
+  totalFlips: number;
 }
 
 export enum AppActionEnum {
@@ -27,6 +28,7 @@ export enum AppActionEnum {
   SET_RECENT_PLAYS = 'SET_RECENT_PLAYS',
   SET_TOP_PLAYERS = 'SET_TOP_PLAYERS',
   SET_FLAG = 'SET_FLAG',
+  SET_TOTAL_FLIPS = 'SET_TOTAL_FLIPS',
 }
 
 export interface SetRecentPlaysAction {
@@ -58,10 +60,16 @@ export interface SetFlagAction {
   payload: 'recent' | 'top wins';
 }
 
+export interface SetTotalFlipsAction {
+  type: AppActionEnum.SET_TOTAL_FLIPS;
+  payload: number;
+}
+
 export type AppAction =
   | SetThemeAction
   | SetUserAction
   | ClearUserAction
   | SetTopPlayersAction
   | SetRecentPlaysAction
-  | SetFlagAction;
+  | SetFlagAction
+  | SetTotalFlipsAction;

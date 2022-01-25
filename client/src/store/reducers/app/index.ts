@@ -9,6 +9,7 @@ const initialState: AppState = {
   recentPlays: [] as IPlays[],
   topPlayers: [] as IPlays[],
   flag: 'recent',
+  totalFlips: 0,
 };
 
 export default function appReducer(
@@ -26,6 +27,8 @@ export default function appReducer(
       return { ...state, topPlayers: action.payload };
     case AppActionEnum.SET_FLAG:
       return { ...state, flag: action.payload };
+    case AppActionEnum.SET_TOTAL_FLIPS:
+      return { ...state, totalFlips: action.payload };
     case AppActionEnum.CLEAR_USER:
       return { ...state, user: {} as IUser };
     default:

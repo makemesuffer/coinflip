@@ -9,7 +9,7 @@ const Loader: React.FC<LoaderProps> = ({ theme, ...props }) => {
   const loaderClass = classNames('w-4 h-4 rounded-full', {
     'bg-blue-400': theme === 'light',
     'bg-purple-400': theme === 'dark',
-    'bg-yellow-400': theme === 'cyberpunk',
+    'bg-pink-400': theme === 'cyberpunk',
   });
 
   return (
