@@ -38,6 +38,7 @@ export const CoinflipActionCreators = {
   }),
 
   getRecent: () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(CoinflipActionCreators.setError([]));
     try {
       const store = getState();
       let contract = coinflipSelectors.selectContract(store);
@@ -68,7 +69,7 @@ export const CoinflipActionCreators = {
         })
         .slice(0, 20);
       return mapped;
-    } catch (err) {
+    } catch (err: any) {
       dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
     }
   },
@@ -171,6 +172,7 @@ export const CoinflipActionCreators = {
   addBet:
     ({ betSize, side }: { betSize: BigNumber; side: 1 | 0 }) =>
     async (dispatch: AppDispatch, getState: () => RootState) => {
+      CoinflipActionCreators.setError([]);
       const store = getState();
       const contract = coinflipSelectors.selectContract(store);
       if (contract) {
@@ -213,7 +215,13 @@ export const CoinflipActionCreators = {
             dispatch(CoinflipActionCreators.setGameStatus('win'));
           }
         } catch (err: any) {
-          dispatch(CoinflipActionCreators.setError(['Insufficient funds']));
+          if (err.code === 4001) {
+            dispatch(
+              CoinflipActionCreators.setError(['User denied transaction'])
+            );
+          } else {
+            dispatch(CoinflipActionCreators.setError(['Insufficient funds']));
+          }
         }
       }
     },

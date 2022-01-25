@@ -1,10 +1,12 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
+import { BigNumber } from 'ethers';
 
 import { Identicon } from 'components/common/Identicon';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 import { IPlays } from 'store/reducers/app/types';
 import { Loader } from 'components/common/Loader';
+import { weiToMatic } from 'utils/formatEther';
 
 interface IRecentPlays {
   flag: 'top wins' | 'recent';
@@ -32,7 +34,7 @@ const RecentPlays: React.FC<IRecentPlays> = ({ flag }) => {
                 <p className="text-sm">
                   Wallet ({play.playerAddress.slice(2, 6)}) bet on{' '}
                   {play.headsOrTails === 1 ? 'TAILS' : 'HEADS'} and won{' '}
-                  {play.amountWon}.
+                  {weiToMatic(BigNumber.from(String(play.amountWon)))} MATIC.
                 </p>
                 <p className="text-xs ml-auto self-end pb-1">
                   {/* {recentPlay.blockNumber} */}

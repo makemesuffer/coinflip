@@ -10,7 +10,7 @@ export const ethToWei = (eth: number): BigNumber => parseEther(`${eth}`);
 
 export const ethToMatic = (eth: number) => (ONE_ETHER_IN_MATIC * eth).toFixed(2);
 
-export const weiToMatic = (wei: BigNumber | number) => {
+export const weiToMatic = (wei: BigNumber) => {
   const eth = formatEther(wei);
   return ethToMatic(+eth);
 };

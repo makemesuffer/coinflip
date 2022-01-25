@@ -6,7 +6,6 @@ interface IFlippingFormProps {
 }
 
 const FlippingForm: React.FC<IFlippingFormProps> = ({ side, amount }) => {
-  console.log(amount);
   return (
     <div>
       <div className="text-center text-xl font-bold mt-10">FLIPPING</div>

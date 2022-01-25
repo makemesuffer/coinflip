@@ -31,7 +31,6 @@ const BetForm = () => {
           side: selectedValues.side === 'tails' ? 1 : 0,
         });
       } catch (err: any) {
-        console.log(ethToWei(+selectedValues.value));
         setAlert({ type: AlertTypes.error, message: err.message });
       }
     } else {
