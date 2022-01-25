@@ -65,7 +65,9 @@ const Header = () => {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
-                <p className="text-sm ml-auto">{ethToMatic(user.cashAmount)} MATIC</p>
+                <p className="text-sm ml-auto">
+                  {ethToMatic(user.cashAmount)} MATIC
+                </p>
               </div>
             </div>
           </label>
@@ -97,7 +99,9 @@ const Header = () => {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
-                <p className="text-sm ml-auto">{ethToMatic(user.cashAmount)} MATIC</p>
+                <p className="text-sm ml-auto">
+                  {ethToMatic(user.cashAmount)} MATIC
+                </p>
               </div>
             </div>
           </div>
@@ -105,22 +109,24 @@ const Header = () => {
       )}
       <input type="checkbox" id="account-modal" className="modal-toggle" />
       <Modal forWhat="account-modal">
-        <div className="flex flex-col gap-5 py-4 px-2 sm:px-2 lg:px-2 flex-1 items-center">
-          <h3 className="text-2xl font-extrabold">Account Info</h3>
-          <Identicon address={user.account} size={50} />
-          <div className="md:flex-row flex flex-col gap-5 md:gap-0">
-            <div className="flex flex-col text-center md:w-1/3 w-9/12 mx-auto">
-              <h5 className="text-xl font-bold py-1">Address:</h5>
-              <p className="text-md break-words">{user.account}</p>
+        <div className="flex flex-col py-4 px-2 sm:px-2 lg:px-2 flex-1">
+          <h3 className="flex items-center justify-center text-2xl font-extrabold gap-5">
+            Account Info <Identicon address={user.account} size={50} />
+          </h3>
+          <div className="divider" />
+
+          <div className="flex flex-col">
+            <div className="text-xl font-bold py-1">
+              <span className="">Address:</span>
             </div>
-            <div className="flex flex-col text-center md:w-1/3 w-9/12 mx-auto">
-              <h5 className="text-xl font-bold py-1">Balance:</h5>
-              <p className="text-md">{ethToMatic(user.cashAmount)} MATIC</p>
+            <div className="text-md">{user.account}</div>
+
+            <div className="flex flex-col">
+              <div className="text-xl font-bold py-1">
+                <span className="">Balance:</span>
+              </div>
+              <div className="text-md">{ethToMatic(user.cashAmount)} MATIC</div>
             </div>
-          </div>
-          <div className="mt-2 flex flex-col divide-y w-full text-center">
-            <h5 className="text-xl font-bold py-2">Your Recent Flips</h5>
-            <p className="text-md py-2">Need to think of...</p>
           </div>
         </div>
         <div className="modal-action pb-3">

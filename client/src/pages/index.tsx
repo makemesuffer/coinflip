@@ -19,10 +19,13 @@ import { FlippingForm } from 'components/ui/FlippingForm';
 import useContract from 'hooks/useContract';
 import { AlertTypes } from 'store/reducers/alert/types';
 import { parseGames } from 'utils/parseGames';
-import { Loader } from 'components/common/Loader';
+import { LoaderNoSSR } from 'components/common/Loader';
+import { weiToMatic } from 'utils/formatEther';
 
 const Home: NextPage = () => {
-  const { theme } = useTypedSelector((state) => state.app);
+  const { theme, totalFlips, recentPlays, user } = useTypedSelector(
+    (state) => state.app
+  );
   const { gameStatus, playerBet, gameResult } = useTypedSelector(
     (state) => state.coinflip
   );
@@ -37,6 +40,7 @@ const Home: NextPage = () => {
     getRecent,
     setRecentPlays,
     setTopWins,
+    setTotalFlips,
   } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const imageRef = useRef<HTMLDivElement>();
@@ -78,6 +82,12 @@ const Home: NextPage = () => {
       const rg = parseGames(recentGames);
       setRecentPlays(rg);
     });
+
+    const getTotal = async () => {
+      const total = await contract.totalBets();
+      setTotalFlips(+weiToMatic(total));
+    };
+    getTotal();
   }, [contract]);
 
   useEffect(() => {
@@ -114,7 +124,6 @@ const Home: NextPage = () => {
       await activate(getConnectors, undefined, true);
       setGameStatus('betting');
     } catch (error: any) {
-      
       if (error instanceof UserRejectedRequestError) {
         setConnecting(false);
       } else {
@@ -141,7 +150,7 @@ const Home: NextPage = () => {
           {contract ? (
             <RecentPlaysNoSSR flag={'recent'} />
           ) : (
-            <Loader theme={theme} />
+            <LoaderNoSSR theme={theme} />
           )}
         </div>
       );
@@ -156,36 +165,48 @@ const Home: NextPage = () => {
     }
   }, [gameStatus]);
 
-  return (
-    <Wrapper>
-      <div className="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 flex-1">
-        <div className="w-full space-y-8 max-w-2xl">
-          <h3 className="text-center text-2xl font-extrabold">
-            Over 122K SOL ($16.9M USD) FLIPPED!
-          </h3>
-          <div className="coin" id="coin" ref={imageRef as any}>
-            <div className="heads">
-              <Image
-                src="/assets/svg/heads.svg"
-                alt="coin"
-                height="140"
-                width="140"
-              />
-            </div>
-            <div className="tails">
-              <Image
-                src="/assets/svg/tails.svg"
-                alt="coin"
-                height="150"
-                width="150"
-              />
+  const content = useMemo(() => {
+    if (Boolean(totalFlips) && Boolean(recentPlays.length)) {
+      return (
+        <Wrapper>
+          <div className="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 flex-1">
+            <div className="w-full space-y-8 max-w-2xl">
+              <h3 className="text-center text-2xl font-extrabold">
+                {Boolean(totalFlips) && <>Over {totalFlips} MATIC FLIPPED!</>}
+              </h3>
+              <div className="coin" id="coin" ref={imageRef as any}>
+                <div className="heads">
+                  <Image
+                    src="/assets/svg/heads.svg"
+                    alt="coin"
+                    height="140"
+                    width="140"
+                  />
+                </div>
+                <div className="tails">
+                  <Image
+                    src="/assets/svg/tails.svg"
+                    alt="coin"
+                    height="150"
+                    width="150"
+                  />
+                </div>
+              </div>
+              {viewToRender}
             </div>
           </div>
-          {viewToRender}
-        </div>
-      </div>
-    </Wrapper>
-  );
+        </Wrapper>
+      );
+    } else {
+      return (
+        <Wrapper>
+          <LoaderNoSSR theme={theme} />
+        </Wrapper>
+      );
+    }
+  }, [totalFlips, recentPlays, user]);
+
+  return content;
 };
 
 export default Home;

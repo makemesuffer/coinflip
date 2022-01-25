@@ -10,6 +10,7 @@ import {
   SetRecentPlaysAction,
   SetThemeAction,
   SetTopPlayersAction,
+  SetTotalFlipsAction,
   SetUserAction,
 } from './types';
 
@@ -44,5 +45,9 @@ export const AppActionCreators = {
   }),
   clearUser: (): ClearUserAction => ({
     type: AppActionEnum.CLEAR_USER,
+  }),
+  setTotalFlips: (totalFlips: number): SetTotalFlipsAction => ({
+    type: AppActionEnum.SET_TOTAL_FLIPS,
+    payload: totalFlips,
   }),
 };
