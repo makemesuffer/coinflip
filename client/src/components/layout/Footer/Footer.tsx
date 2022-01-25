@@ -101,7 +101,7 @@ const Footer = () => {
           </div>
         </Modal>
         <label htmlFor="fr-modal" className="px-2 underline cursor-pointer">
-          FLIP RESPONSOBILITY
+          FLIP RESPONSIBLY
         </label>
         <input type="checkbox" id="fr-modal" className="modal-toggle" />
         <Modal forWhat="fr-modal">

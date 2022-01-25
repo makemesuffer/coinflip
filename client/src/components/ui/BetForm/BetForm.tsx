@@ -120,7 +120,7 @@ const BetForm = () => {
           </Button>
         </div>
         <Button additionalClass="p-2" onClick={gameStarter}>
-          DOUBLE OF NOTHING
+          DOUBLE OR NOTHING
         </Button>
       </div>
     </div>
