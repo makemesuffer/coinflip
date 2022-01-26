@@ -46,7 +46,7 @@ const WinLoseForm: React.FC<IWinLoseFormProps> = ({ win }) => {
           }
         }}
       >
-        {win ? 'CLAIM REWARD' : 'TRY AGAIN?'}
+        FLIP AGAIN?
       </Button>
     </div>
   );
