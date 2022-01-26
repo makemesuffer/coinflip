@@ -40,7 +40,7 @@ const Home: NextPage = () => {
     getRecent,
     setRecentPlays,
     setTopWins,
-    setTotalFlips,
+    setTotalFlips
   } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const imageRef = useRef<HTMLDivElement>();
@@ -167,7 +167,6 @@ const Home: NextPage = () => {
     }
   }, [gameStatus]);
 
-  console.log(recentPlays);
   // Boolean(recentPlays.length) &&
   const content = useMemo(() => {
     if (Boolean(totalFlips)) {

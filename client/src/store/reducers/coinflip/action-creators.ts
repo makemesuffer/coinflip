@@ -176,7 +176,17 @@ export const CoinflipActionCreators = {
     async (dispatch: AppDispatch, getState: () => RootState) => {
       CoinflipActionCreators.setError([]);
       const store = getState();
-      const contract = coinflipSelectors.selectContract(store);
+
+      let contract;
+      if (window?.ethereum?.selectedAddress) {
+        const ABI = new ethers.utils.Interface(abi);
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        const signer = provider.getSigner();
+        contract = new ethers.Contract(address, ABI, signer);
+      } else {
+        const contract = coinflipSelectors.selectContract(store);
+      }
+
       if (contract) {
         try {
           const startBlock = await contract.provider.getBlockNumber();
@@ -217,6 +227,7 @@ export const CoinflipActionCreators = {
             dispatch(CoinflipActionCreators.setGameStatus('win'));
           }
         } catch (err: any) {
+          console.log(err)
           if (err.code === 4001) {
             dispatch(
               CoinflipActionCreators.setError(['User denied transaction'])

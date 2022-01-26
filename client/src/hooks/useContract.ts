@@ -10,7 +10,7 @@ import { address } from 'data/address';
 export default function useContract<T extends Contract = Contract>() {
   const { setContract } = useActions();
   const { library, chainId, account } = useWeb3React();
-  const provider = new ethers.providers.JsonRpcProvider(
+  let provider = new ethers.providers.JsonRpcProvider(
     'https://rpc-mumbai.maticvigil.com'
   );
 
@@ -22,7 +22,17 @@ export default function useContract<T extends Contract = Contract>() {
     if (!library || !chainId) {
       try {
         const ABI = new ethers.utils.Interface(abi);
-        const contract = new Contract(address, ABI, provider);
+        let contract;
+        if (window?.ethereum?.selectedAddress) {
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          const signer = provider.getSigner();
+          contract = new Contract(address, ABI, signer);
+        } else {
+          contract = new Contract(address, ABI, provider);
+        }
+
+        console.log(contract)
+
         setContract({ connected: true, contract });
         return contract;
       } catch (error) {
@@ -41,5 +51,5 @@ export default function useContract<T extends Contract = Contract>() {
       console.error('Failed To Get Contract', error);
       return null;
     }
-  }, [address, abi, chainId, library]) as T;
+  }, [address, abi, chainId, library, account]) as T;
 }
