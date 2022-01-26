@@ -21,6 +21,8 @@ import { coinflipSelectors } from './selectors';
 import { weiToEth } from 'utils/formatEther';
 import { parseQuery } from 'utils/parseQuery';
 
+const defaultStartBlock = 0;
+
 export const CoinflipActionCreators = {
   setIsLoading: (payload: boolean): SetIsLoadingAction => ({
     type: CoinflipActionEnum.SET_IS_LOADING,
@@ -51,7 +53,7 @@ export const CoinflipActionCreators = {
       }
 
       const filter = contract.filters.playerFlipped();
-      const results = await contract.queryFilter(filter, -1000000, 'latest');
+      const results = await contract.queryFilter(filter, defaultStartBlock, 'latest');
 
       const sorted = results.sort((a: any, b: any) => {
         return b.blockNumber - a.blockNumber;
@@ -90,7 +92,7 @@ export const CoinflipActionCreators = {
         const playerAddress = store.app.user.account;
 
         const filter = contract.filters.playerFlipped(null, playerAddress);
-        const results = await contract.queryFilter(filter, -1000000, 'latest');
+        const results = await contract.queryFilter(filter, defaultStartBlock, 'latest');
 
         const sorted = results.sort((a: any, b: any) => {
           return b.blockNumber - a.blockNumber;
@@ -146,7 +148,7 @@ export const CoinflipActionCreators = {
         }
 
         const filter = contract.filters.playerFlipped();
-        const results = await contract.queryFilter(filter, -1000000, 'latest');
+        const results = await contract.queryFilter(filter, 0, 'latest');
 
         const sorted = results.sort((a: any, b: any) => {
           return b.args.amountWon - a.args.amountWon;
