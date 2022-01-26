@@ -77,11 +77,13 @@ const Home: NextPage = () => {
       setTopWins(tw);
     });
 
-    // @ts-ignore
-    getRecent().then((recentGames: any) => {
-      const rg = parseGames(recentGames);
-      setRecentPlays(rg);
-    });
+    setInterval(() => {
+      // @ts-ignore
+      getRecent().then((recentGames: any) => {
+        const rg = parseGames(recentGames);
+        setRecentPlays(rg);
+      });
+    }, 5000);
 
     const getTotal = async () => {
       if (contract) {

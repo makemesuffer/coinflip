@@ -22,7 +22,10 @@ import { weiToEth } from 'utils/formatEther';
 import { parseQuery } from 'utils/parseQuery';
 
 const defaultStartBlock = -1000000;
-const defaultProvider = new ethers.providers.AlchemyProvider(80001, 'L2pf1v60C8YVMTXP6xIxoC8JRXniYQXq')
+const defaultProvider = new ethers.providers.AlchemyProvider(
+  80001,
+  'L2pf1v60C8YVMTXP6xIxoC8JRXniYQXq'
+);
 
 export const CoinflipActionCreators = {
   setIsLoading: (payload: boolean): SetIsLoadingAction => ({
@@ -43,14 +46,14 @@ export const CoinflipActionCreators = {
   getRecent: () => async (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(CoinflipActionCreators.setError([]));
     try {
-      const contract = new ethers.Contract(
-        address,
-        abi,
-        defaultProvider
-      );
+      const contract = new ethers.Contract(address, abi, defaultProvider);
 
       const filter = contract.filters.playerFlipped();
-      const results = await contract.queryFilter(filter, defaultStartBlock, 'latest');
+      const results = await contract.queryFilter(
+        filter,
+        defaultStartBlock,
+        'latest'
+      );
 
       const sorted = results.sort((a: any, b: any) => {
         return b.blockNumber - a.blockNumber;
@@ -89,7 +92,11 @@ export const CoinflipActionCreators = {
         const playerAddress = store.app.user.account;
 
         const filter = contract.filters.playerFlipped(null, playerAddress);
-        const results = await contract.queryFilter(filter, defaultStartBlock, 'latest');
+        const results = await contract.queryFilter(
+          filter,
+          defaultStartBlock,
+          'latest'
+        );
 
         const sorted = results.sort((a: any, b: any) => {
           return b.blockNumber - a.blockNumber;
@@ -134,11 +141,7 @@ export const CoinflipActionCreators = {
   getTopWins:
     () => async (dispatch: AppDispatch, getState: () => RootState) => {
       try {
-        const contract = new ethers.Contract(
-          address,
-          abi,
-          defaultProvider
-        );
+        const contract = new ethers.Contract(address, abi, defaultProvider);
 
         const filter = contract.filters.playerFlipped();
         const results = await contract.queryFilter(filter, 0, 'latest');
@@ -175,7 +178,10 @@ export const CoinflipActionCreators = {
       if (window?.ethereum?.selectedAddress) {
         const ABI = new ethers.utils.Interface(abi);
         // @ts-ignore
-        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          'any'
+        );
         const signer = provider.getSigner();
         contract = new ethers.Contract(address, ABI, signer);
       } else {
@@ -222,7 +228,6 @@ export const CoinflipActionCreators = {
             dispatch(CoinflipActionCreators.setGameStatus('win'));
           }
         } catch (err: any) {
-          console.log(err)
           if (err.code === 4001) {
             dispatch(
               CoinflipActionCreators.setError(['User denied transaction'])
