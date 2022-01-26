@@ -23,7 +23,9 @@ export default function useContract<T extends Contract = Contract>() {
       try {
         const ABI = new ethers.utils.Interface(abi);
         let contract;
+        // @ts-ignore
         if (window?.ethereum?.selectedAddress) {
+          // @ts-ignore
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           const signer = provider.getSigner();
           contract = new Contract(address, ABI, signer);
