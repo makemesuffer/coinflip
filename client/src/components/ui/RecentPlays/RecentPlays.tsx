@@ -54,7 +54,8 @@ const RecentPlays: React.FC<IRecentPlays> = ({ flag }) => {
                 <p className="text-sm">
                   Wallet ({play.playerAddress.slice(2, 6)}) bet{' '}
                   {Boolean(play.amountWon) &&
-                    weiToMatic(BigNumber.from(String(play.amountWon)))}{' '}
+                    +weiToMatic(BigNumber.from(String(play.amountWon))) /
+                      2}{' '}
                   on {play.headsOrTails === 1 ? 'TAILS' : 'HEADS'} and{' '}
                   {play.didPlayerWin ? 'doubled their money' : 'got rugged'}.
                 </p>
@@ -67,7 +68,7 @@ const RecentPlays: React.FC<IRecentPlays> = ({ flag }) => {
     } else {
       return <Loader theme={theme} />;
     }
-  }, [flag, topPlayers, recentPlays]);
+  }, [flag, topPlayers, recentPlays, theme]);
 
   return content;
 };

@@ -13,13 +13,14 @@ import { Dropdown } from 'components/ui/Dropdown';
 import { AlertDrawer } from 'components/ui/AlertDrawer';
 import { RecentPlaysNoSSR } from 'components/ui/RecentPlays';
 import { ethToMatic } from 'utils/formatEther';
+import { parseGames } from 'utils/parseGames';
 
 const Header = () => {
   const { theme, user, flag } = useTypedSelector((state) => state.app);
   const { setThemeCookie, setGameStatus, setFlag } = useActions();
   const { theme: _theme, setTheme } = useTheme();
   const { deactivate } = useWeb3React();
-  const { setUser } = useActions();
+  const { setUser, setTopWins, setRecentPlays } = useActions();
   const [showMobileToday, setShowMobileToday] = useState<boolean>(false);
 
   const deactivateAccount = () => {
@@ -28,6 +29,19 @@ const Header = () => {
       setUser({} as IUser);
       setGameStatus('not started');
     } catch (err) {}
+  };
+
+  const performFetch = () => {
+    // @ts-ignore
+    getTopWins().then((topWins: any) => {
+      const tw = parseGames(topWins);
+      setTopWins(tw);
+    });
+    // @ts-ignore
+    getRecent().then((recentGames: any) => {
+      const rg = parseGames(recentGames);
+      setRecentPlays(rg);
+    });
   };
 
   const changeTheme = () => {
@@ -83,7 +97,12 @@ const Header = () => {
           <Dropdown />
         </div>
         <div className="block md:hidden">
-          <Button onClick={() => setShowMobileToday(!showMobileToday)}>
+          <Button
+            onClick={() => {
+              performFetch();
+              setShowMobileToday(!showMobileToday);
+            }}
+          >
             Today
           </Button>
         </div>
@@ -153,7 +172,10 @@ const Header = () => {
                 additionalClass={
                   flag === 'recent' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => setFlag('recent')}
+                onClick={() => {
+                  performFetch();
+                  setFlag('recent');
+                }}
               >
                 Recent
               </Button>
@@ -161,7 +183,10 @@ const Header = () => {
                 additionalClass={
                   flag === 'top wins' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => setFlag('top wins')}
+                onClick={() => {
+                  performFetch();
+                  setFlag('top wins');
+                }}
               >
                 Top Wins
               </Button>
