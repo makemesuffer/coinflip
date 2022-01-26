@@ -52,13 +52,13 @@ const RecentPlays: React.FC<IRecentPlays> = ({ flag }) => {
               <div className="flex px-3 items-center gap-5">
                 <Identicon address={play.playerAddress} />
                 <p className="text-sm">
-                  Wallet ({play.playerAddress.slice(2, 6)}) bet on{' '}
-                  {play.headsOrTails === 1 ? 'TAILS' : 'HEADS'} and{' '}
+                  Wallet ({play.playerAddress.slice(2, 6)}) bet{' '}
+                  {Boolean(play.amountWon) &&
+                    weiToMatic(BigNumber.from(String(play.amountWon)))}{' '}
+                  on {play.headsOrTails === 1 ? 'TAILS' : 'HEADS'} and{' '}
                   {play.didPlayerWin ? 'doubled their money' : 'got rugged'}.
                 </p>
-                <p className="text-xs ml-auto self-end pb-1">
-                  {/* {recentPlay.blockNumber} */}
-                </p>
+                <p className="text-xs ml-auto self-end pb-1"></p>
               </div>
             </div>
           ))}
