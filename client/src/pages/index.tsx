@@ -134,8 +134,6 @@ const Home: NextPage = () => {
     }
   }
 
-  console.log(gameStatus);
-
   const viewToRender = useMemo(() => {
     if (gameStatus === 'not started') {
       return (
@@ -209,7 +207,7 @@ const Home: NextPage = () => {
         </Wrapper>
       );
     }
-  }, [totalFlips, recentPlays, user]);
+  }, [totalFlips, recentPlays, user, gameStatus]);
 
   return content;
 };
