@@ -55,7 +55,7 @@ const Header = () => {
         <AlertDrawer />
       </div>
       <div className="gap-5 flex flex-row-reverse items-center md:justify-start">
-        {user.cashAmount && (
+        {user.account && (
           <label htmlFor="account-modal" className={cardClass}>
             <div className="hidden md:flex items-center px-3 gap-2">
               <Identicon address={user.account} />
