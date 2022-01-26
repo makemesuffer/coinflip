@@ -88,7 +88,7 @@ const Header = () => {
           </Button>
         </div>
       </div>
-      {user.cashAmount && (
+      {user.account && (
         <label htmlFor="account-modal" className="md:hidden px-2 pt-5">
           <div className={cardClass}>
             <div className="flex items-center px-3 gap-2">

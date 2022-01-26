@@ -40,7 +40,7 @@ const Home: NextPage = () => {
     getRecent,
     setRecentPlays,
     setTopWins,
-    setTotalFlips
+    setTotalFlips,
   } = useActions();
   const onboarding = useRef<MetaMaskOnboarding>();
   const imageRef = useRef<HTMLDivElement>();
@@ -134,6 +134,8 @@ const Home: NextPage = () => {
     }
   }
 
+  console.log(gameStatus);
+
   const viewToRender = useMemo(() => {
     if (gameStatus === 'not started') {
       return (
@@ -167,9 +169,9 @@ const Home: NextPage = () => {
     }
   }, [gameStatus]);
 
-  // Boolean(recentPlays.length) &&
+  //  && Boolean(totalFlips)
   const content = useMemo(() => {
-    if (Boolean(totalFlips)) {
+    if (Boolean(recentPlays.length)) {
       return (
         <Wrapper>
           <div className="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 flex-1">
