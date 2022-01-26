@@ -21,7 +21,8 @@ import { coinflipSelectors } from './selectors';
 import { weiToEth } from 'utils/formatEther';
 import { parseQuery } from 'utils/parseQuery';
 
-const defaultStartBlock = 0;
+const defaultStartBlock = -1000000;
+const defaultProvider = new ethers.providers.AlchemyProvider(80001, 'L2pf1v60C8YVMTXP6xIxoC8JRXniYQXq')
 
 export const CoinflipActionCreators = {
   setIsLoading: (payload: boolean): SetIsLoadingAction => ({
@@ -42,15 +43,11 @@ export const CoinflipActionCreators = {
   getRecent: () => async (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(CoinflipActionCreators.setError([]));
     try {
-      const store = getState();
-      let contract = coinflipSelectors.selectContract(store);
-      if (!contract) {
-        contract = new ethers.Contract(
-          address,
-          abi,
-          ethers.getDefaultProvider('rinkeby')
-        );
-      }
+      const contract = new ethers.Contract(
+        address,
+        abi,
+        defaultProvider
+      );
 
       const filter = contract.filters.playerFlipped();
       const results = await contract.queryFilter(filter, defaultStartBlock, 'latest');
@@ -137,15 +134,11 @@ export const CoinflipActionCreators = {
   getTopWins:
     () => async (dispatch: AppDispatch, getState: () => RootState) => {
       try {
-        const store = getState();
-        let contract = coinflipSelectors.selectContract(store);
-        if (!contract) {
-          contract = new ethers.Contract(
-            address,
-            abi,
-            ethers.getDefaultProvider('rinkeby')
-          );
-        }
+        const contract = new ethers.Contract(
+          address,
+          abi,
+          defaultProvider
+        );
 
         const filter = contract.filters.playerFlipped();
         const results = await contract.queryFilter(filter, 0, 'latest');
@@ -178,8 +171,10 @@ export const CoinflipActionCreators = {
       const store = getState();
 
       let contract;
+      // @ts-ignore
       if (window?.ethereum?.selectedAddress) {
         const ABI = new ethers.utils.Interface(abi);
+        // @ts-ignore
         const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
         const signer = provider.getSigner();
         contract = new ethers.Contract(address, ABI, signer);
