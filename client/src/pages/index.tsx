@@ -84,8 +84,16 @@ const Home: NextPage = () => {
     });
 
     const getTotal = async () => {
-      const total = await contract.totalBets();
-      setTotalFlips(+weiToMatic(total));
+      if (contract && contract.deployTransaction) {
+        // const total = await contract.totalBets();
+        // console.log(total);
+        // if (typeof total === 'number') {
+        //   console.log(total);
+        // }
+        // } else {
+        //   setTotalFlips(+weiToMatic(total));
+        // }
+      }
     };
     getTotal();
   }, [contract]);
@@ -166,7 +174,9 @@ const Home: NextPage = () => {
   }, [gameStatus]);
 
   const content = useMemo(() => {
-    if (Boolean(totalFlips) && Boolean(recentPlays.length)) {
+    // Boolean(totalFlips)
+    // Boolean(recentPlays.length)
+    if (true) {
       return (
         <Wrapper>
           <div className="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 flex-1">
