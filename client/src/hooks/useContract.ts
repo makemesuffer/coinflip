@@ -10,6 +10,9 @@ import { address } from 'data/address';
 export default function useContract<T extends Contract = Contract>() {
   const { setContract } = useActions();
   const { library, chainId, account } = useWeb3React();
+  const provider = new ethers.providers.JsonRpcProvider(
+    'https://rpc-mumbai.maticvigil.com'
+  );
 
   return useMemo(() => {
     if (!address || !abi) {
@@ -19,11 +22,7 @@ export default function useContract<T extends Contract = Contract>() {
     if (!library || !chainId) {
       try {
         const ABI = new ethers.utils.Interface(abi);
-        const contract = new Contract(
-          address,
-          ABI,
-          ethers.getDefaultProvider('rinkeby')
-        );
+        const contract = new Contract(address, ABI, provider);
         setContract({ connected: true, contract });
         return contract;
       } catch (error) {
@@ -34,7 +33,8 @@ export default function useContract<T extends Contract = Contract>() {
 
     try {
       const ABI = new ethers.utils.Interface(abi);
-      const contract = new Contract(address, ABI, library.getSigner(account));
+      // library.getSigner(account)
+      const contract = new Contract(address, ABI, provider);
       setContract({ connected: true, contract });
       return contract;
     } catch (error) {

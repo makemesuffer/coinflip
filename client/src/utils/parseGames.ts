@@ -10,14 +10,16 @@ interface IGames {
 }
 
 export const parseGames = (games: IGames[]) => {
-  return games.map((game: IGames) => {
-    return {
-      amountWon: Number(game.amountWon),
-      blockNumber: game.blockNumber,
-      didPlayerWin: game.didPlayerWin,
-      headsOrTails: Number(game.headsOrTails),
-      playerAddress: game.playerAddress,
-      randomNonce: Number(game.randomNonce),
-    };
-  });
+  if (games) {
+    return games.map((game: IGames) => {
+      return {
+        amountWon: Number(game.amountWon),
+        blockNumber: game.blockNumber,
+        didPlayerWin: game.didPlayerWin,
+        headsOrTails: Number(game.headsOrTails),
+        playerAddress: game.playerAddress,
+        randomNonce: Number(game.randomNonce),
+      };
+    });
+  }
 };
