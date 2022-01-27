@@ -20,7 +20,8 @@ import useContract from 'hooks/useContract';
 import { AlertTypes } from 'store/reducers/alert/types';
 import { parseGames } from 'utils/parseGames';
 import { LoaderNoSSR } from 'components/common/Loader';
-import { weiToMatic } from 'utils/formatEther';
+import { weiToMatic, ethToWei, weiToEth } from 'utils/formatEther';
+import { BigNumber } from 'ethers';
 
 const Home: NextPage = () => {
   const { theme, totalFlips, recentPlays, user } = useTypedSelector(
@@ -88,7 +89,7 @@ const Home: NextPage = () => {
     const getTotal = async () => {
       if (contract) {
         const total = await contract.totalBets();
-        setTotalFlips(+weiToMatic(total));
+        setTotalFlips(total);
       }
     };
     getTotal();
@@ -177,7 +178,7 @@ const Home: NextPage = () => {
           <div className="flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 flex-1">
             <div className="w-full space-y-8 max-w-2xl">
               <h3 className="text-center text-2xl font-extrabold">
-                {Boolean(totalFlips) && <>Over {totalFlips} MATIC FLIPPED!</>}
+                {Boolean(totalFlips) && <>Over {weiToEth(BigNumber.from(totalFlips))} MATIC FLIPPED!</>}
               </h3>
               <div className="coin" id="coin" ref={imageRef as any}>
                 <div className="heads">
