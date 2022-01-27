@@ -46,7 +46,7 @@ export const AppActionCreators = {
   clearUser: (): ClearUserAction => ({
     type: AppActionEnum.CLEAR_USER,
   }),
-  setTotalFlips: (totalFlips: number): SetTotalFlipsAction => ({
+  setTotalFlips: (totalFlips: bigint): SetTotalFlipsAction => ({
     type: AppActionEnum.SET_TOTAL_FLIPS,
     payload: totalFlips,
   }),
