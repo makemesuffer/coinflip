@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
-import { ethToMatic, ethToWei } from 'utils/formatEther';
+import { ethToMatic, ethToWei, ONE_ETHER_IN_MATIC } from 'utils/formatEther';
 import { AlertTypes } from 'store/reducers/alert/types';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 
@@ -27,7 +27,7 @@ const BetForm = () => {
     if (selectedValues.side && selectedValues.value) {
       try {
         addBet({
-          betSize: ethToWei(+selectedValues.value),
+          betSize: ethToWei(+selectedValues.value * ONE_ETHER_IN_MATIC),
           side: selectedValues.side === 'tails' ? 1 : 0,
         });
       } catch (err: any) {
