@@ -80,7 +80,7 @@ const Header = () => {
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
                 <p className="text-sm ml-auto">
-                  {ethToMatic(user.cashAmount)} MATIC
+                  {user.cashAmount} MATIC
                 </p>
               </div>
             </div>
@@ -144,7 +144,7 @@ const Header = () => {
               <div className="text-xl font-bold py-1">
                 <span className="">Balance:</span>
               </div>
-              <div className="text-md">{ethToMatic(user.cashAmount)} MATIC</div>
+              <div className="text-md">{user.cashAmount} MATIC</div>
             </div>
           </div>
         </div>
