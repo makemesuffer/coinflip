@@ -11,12 +11,94 @@ interface ISelectedValues {
   value: string;
 }
 
+const networks = {
+  '1': {
+    name: 'Ethereum Mainnet',
+    params: []
+  },
+  '3': {
+    name: 'Ropsten Testnet',
+    params: []
+  },
+  '4': {
+    name: 'Rinkeby Testnet',
+    params: []
+  },
+  '42': {
+    name: 'Kovan Testnet',
+    params: []
+  },
+  '5': {
+    name: 'Goerli Testnet',
+    params: []
+  },
+  '137': {
+    name: 'Polygon Mainnet',
+    params: {
+      chainId: '0x89', // 137
+      chainName: 'Polygon Mainnet',
+      nativeCurrency: {
+        name: 'MATIC',
+        symbol: 'MATIC', // 2-6 characters long
+        decimals: 18
+      },
+      rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
+      blockExplorerUrls: ['https://polygonscan.com']
+    }
+  },
+  '80001': {
+    name: 'Polygon Mumbai Testnet',
+    params: {
+      chainId: '0x13881', // 80001
+      chainName: 'Polygon Testnet',
+      nativeCurrency: {
+        name: 'MATIC',
+        symbol: 'MATIC', // 2-6 characters long
+        decimals: 18
+      },
+      rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+      blockExplorerUrls: ['https://mumbai.polygonscan.com']
+    }
+  }
+}
+
+// const requiredNetwork = '137'; // polygon mumbai testnet
+const requiredNetwork = '80001'; // polygon mumbai testnet
+
 const BetForm = () => {
   const [selectedValues, setSelectedValues] = useState<ISelectedValues>(
     {} as ISelectedValues
   );
   const { addBet, setAlert } = useActions();
-  const { errors } = useTypedSelector((state) => state.coinflip);
+
+  const [currentNetwork, setCurrentNetwork] = useState('');
+  const { errors, contractConnection } = useTypedSelector((state) => state.coinflip);
+
+  // @ts-ignore
+  let ethereum: any;
+  useEffect(() => {
+    // @ts-ignore
+    ethereum = window.ethereum;
+
+    if (contractConnection.connected) {
+      if (ethereum) {
+        setCurrentNetwork(ethereum.networkVersion);
+
+        ethereum.on('chainChanged', (chainId: string) => {
+          const networkId = parseInt(chainId, 16).toString();
+          setCurrentNetwork(networkId);
+        });
+      }
+    }
+  }, [])
+
+  const switchToRequiredNetwork = async() => {
+    if (!ethereum) ethereum = window.ethereum;
+    await ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [networks[requiredNetwork].params]
+    });
+  }
 
   const addFocus = (key: string, value: string) => {
     const valuesToSet = { ...selectedValues, [key]: value };
@@ -47,83 +129,103 @@ const BetForm = () => {
   }, [errors]);
 
   return (
-    <div>
-      <div className="text-center text-xl font-bold">I like</div>
-      <div className="flex justify-center gap-5 p-2">
-        <Button
-          additionalClass={`w-4/12 ${
-            selectedValues.side === 'heads' ? 'btn-active' : 'btn-outline'
-          }`}
-          onClick={() => addFocus('side', 'heads')}
-        >
-          HEADS
-        </Button>
-        <Button
-          additionalClass={`w-4/12 ${
-            selectedValues.side === 'tails' ? 'btn-active' : 'btn-outline'
-          }`}
-          onClick={() => addFocus('side', 'tails')}
-        >
-          TAILS
-        </Button>
-      </div>
-      <div className="text-center text-xl font-bold">For</div>
-      <div className="flex flex-col divide-y gap-5">
-        <div className="grid grid-cols-3 gap-5 p-2">
-          <Button
-            additionalClass={
-              selectedValues.value === '0.01' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => addFocus('value', '0.01')}
-          >
-            {ethToMatic(0.01)} MATIC
-          </Button>
-          <Button
-            additionalClass={
-              selectedValues.value === '0.05' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => addFocus('value', '0.05')}
-          >
-            {ethToMatic(0.05)} MATIC
-          </Button>
-          <Button
-            additionalClass={
-              selectedValues.value === '0.1' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => addFocus('value', '0.1')}
-          >
-            {ethToMatic(0.1)} MATIC
-          </Button>
-          <Button
-            additionalClass={
-              selectedValues.value === '0.25' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => addFocus('value', '0.25')}
-          >
-            {ethToMatic(0.25)} MATIC
-          </Button>
-          <Button
-            additionalClass={
-              selectedValues.value === '0.5' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => addFocus('value', '0.5')}
-          >
-            {ethToMatic(0.5)} MATIC
-          </Button>
-          <Button
-            additionalClass={
-              selectedValues.value === '1' ? 'btn-active' : 'btn-outline'
-            }
-            onClick={() => addFocus('value', '1')}
-          >
-            {ethToMatic(1)} MATIC
-          </Button>
+    <>
+      {requiredNetwork !== currentNetwork &&
+        <div>
+          <div className="text-center text-error text-xl font-bold pb-10">
+            You wallet is not on the correct network. The current network is {networks[currentNetwork]?.name || $`Custom Network ${currentNetwork}`}. Please switch to {networks[requiredNetwork]?.name}.
+          </div>
+          <div className="w-full">
+            <Button additionalClass="w-full" onClick={switchToRequiredNetwork}
+            >
+              Click here to switch to {networks[requiredNetwork]?.name}
+            </Button>
+          </div>
+
         </div>
-        <Button additionalClass="p-2" onClick={gameStarter}>
-          DOUBLE OR NOTHING
-        </Button>
-      </div>
-    </div>
+      }
+
+      {requiredNetwork === currentNetwork &&
+        <div>
+          <div className="text-center text-xl font-bold">I like</div>
+          <div className="flex justify-center gap-5 p-2">
+            <Button
+              additionalClass={`w-4/12 ${
+                selectedValues.side === 'heads' ? 'btn-active' : 'btn-outline'
+              }`}
+              onClick={() => addFocus('side', 'heads')}
+            >
+              HEADS
+            </Button>
+            <Button
+              additionalClass={`w-4/12 ${
+                selectedValues.side === 'tails' ? 'btn-active' : 'btn-outline'
+              }`}
+              onClick={() => addFocus('side', 'tails')}
+            >
+              TAILS
+            </Button>
+          </div>
+          <div className="text-center text-xl font-bold">For</div>
+          <div className="flex flex-col divide-y gap-5">
+            <div className="grid grid-cols-3 gap-5 p-2">
+              <Button
+                additionalClass={
+                  selectedValues.value === '0.01' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => addFocus('value', '0.01')}
+              >
+                {ethToMatic(0.01)} MATIC
+              </Button>
+              <Button
+                additionalClass={
+                  selectedValues.value === '0.05' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => addFocus('value', '0.05')}
+              >
+                {ethToMatic(0.05)} MATIC
+              </Button>
+              <Button
+                additionalClass={
+                  selectedValues.value === '0.1' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => addFocus('value', '0.1')}
+              >
+                {ethToMatic(0.1)} MATIC
+              </Button>
+              <Button
+                additionalClass={
+                  selectedValues.value === '0.25' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => addFocus('value', '0.25')}
+              >
+                {ethToMatic(0.25)} MATIC
+              </Button>
+              <Button
+                additionalClass={
+                  selectedValues.value === '0.5' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => addFocus('value', '0.5')}
+              >
+                {ethToMatic(0.5)} MATIC
+              </Button>
+              <Button
+                additionalClass={
+                  selectedValues.value === '1' ? 'btn-active' : 'btn-outline'
+                }
+                onClick={() => addFocus('value', '1')}
+              >
+                {ethToMatic(1)} MATIC
+              </Button>
+            </div>
+            <Button additionalClass="p-2" onClick={gameStarter}>
+              DOUBLE OR NOTHING
+            </Button>
+          </div>
+        </div>
+      }
+
+    </>
   );
 };
 
