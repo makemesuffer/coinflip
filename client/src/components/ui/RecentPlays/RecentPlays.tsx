@@ -6,7 +6,7 @@ import { Identicon } from 'components/common/Identicon';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 import { IPlays } from 'store/reducers/app/types';
 import { Loader } from 'components/common/Loader';
-import { weiToMatic } from 'utils/formatEther';
+import { ethToWei, weiToEth, weiToMatic } from 'utils/formatEther';
 
 interface IRecentPlays {
   flag: 'top wins' | 'recent';
@@ -54,7 +54,7 @@ const RecentPlays: React.FC<IRecentPlays> = ({ flag }) => {
                 <p className="text-sm">
                   Wallet ({play.playerAddress.slice(2, 6)}) bet{' '}
                   {Boolean(play.amountWon) &&
-                    +weiToMatic(BigNumber.from(String(play.amountWon))) /
+                    +weiToEth(BigNumber.from(String(play.amountWon))) /
                       2}{' '}
                   on {play.headsOrTails === 1 ? 'TAILS' : 'HEADS'} and{' '}
                   {play.didPlayerWin ? 'doubled their money' : 'got rugged'}.
