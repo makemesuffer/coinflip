@@ -20,6 +20,7 @@ import {
 import { coinflipSelectors } from './selectors';
 import { weiToEth } from 'utils/formatEther';
 import { parseQuery } from 'utils/parseQuery';
+import { allActionCreators } from '../action-creators';
 
 const defaultStartBlock = -1000000;
 const defaultProvider = new ethers.providers.AlchemyProvider(
@@ -138,6 +139,17 @@ export const CoinflipActionCreators = {
     payload,
   }),
 
+  getTotalBets: () => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(CoinflipActionCreators.setError([]));
+      const contract = new ethers.Contract(address, abi, defaultProvider);
+      const total = await contract.totalBets();
+      dispatch(allActionCreators.setTotalFlips(total));
+    } catch (err) {
+      dispatch(CoinflipActionCreators.setError(['Unexpected Error']));
+    }
+  },
+
   getTopWins:
     () => async (dispatch: AppDispatch, getState: () => RootState) => {
       try {
@@ -177,8 +189,8 @@ export const CoinflipActionCreators = {
       // @ts-ignore
       if (window?.ethereum?.selectedAddress) {
         const ABI = new ethers.utils.Interface(abi);
-        // @ts-ignore
         const provider = new ethers.providers.Web3Provider(
+          // @ts-ignore
           window.ethereum,
           'any'
         );

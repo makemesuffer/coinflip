@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from 'components/common/Button';
 import { useActions } from 'hooks/useActions';
@@ -14,23 +14,23 @@ interface ISelectedValues {
 const networks = {
   '1': {
     name: 'Ethereum Mainnet',
-    params: []
+    params: [],
   },
   '3': {
     name: 'Ropsten Testnet',
-    params: []
+    params: [],
   },
   '4': {
     name: 'Rinkeby Testnet',
-    params: []
+    params: [],
   },
   '42': {
     name: 'Kovan Testnet',
-    params: []
+    params: [],
   },
   '5': {
     name: 'Goerli Testnet',
-    params: []
+    params: [],
   },
   '137': {
     name: 'Polygon Mainnet',
@@ -40,11 +40,11 @@ const networks = {
       nativeCurrency: {
         name: 'MATIC',
         symbol: 'MATIC', // 2-6 characters long
-        decimals: 18
+        decimals: 18,
       },
       rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
-      blockExplorerUrls: ['https://polygonscan.com']
-    }
+      blockExplorerUrls: ['https://polygonscan.com'],
+    },
   },
   '80001': {
     name: 'Polygon Mumbai Testnet',
@@ -54,13 +54,13 @@ const networks = {
       nativeCurrency: {
         name: 'MATIC',
         symbol: 'MATIC', // 2-6 characters long
-        decimals: 18
+        decimals: 18,
       },
       rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-      blockExplorerUrls: ['https://mumbai.polygonscan.com']
-    }
-  }
-}
+      blockExplorerUrls: ['https://mumbai.polygonscan.com'],
+    },
+  },
+};
 
 // const requiredNetwork = '137'; // polygon mumbai testnet
 const requiredNetwork = '80001'; // polygon mumbai testnet
@@ -72,7 +72,9 @@ const BetForm = () => {
   const { addBet, setAlert } = useActions();
 
   const [currentNetwork, setCurrentNetwork] = useState('');
-  const { errors, contractConnection } = useTypedSelector((state) => state.coinflip);
+  const { errors, contractConnection } = useTypedSelector(
+    (state) => state.coinflip
+  );
 
   // @ts-ignore
   let ethereum: any;
@@ -90,15 +92,16 @@ const BetForm = () => {
         });
       }
     }
-  }, [])
+  }, []);
 
-  const switchToRequiredNetwork = async() => {
+  const switchToRequiredNetwork = async () => {
+    // @ts-ignore
     if (!ethereum) ethereum = window.ethereum;
     await ethereum.request({
       method: 'wallet_addEthereumChain',
-      params: [networks[requiredNetwork].params]
+      params: [networks[requiredNetwork].params],
     });
-  }
+  };
 
   const addFocus = (key: string, value: string) => {
     const valuesToSet = { ...selectedValues, [key]: value };
@@ -128,24 +131,26 @@ const BetForm = () => {
     }
   }, [errors]);
 
-  return (
-    <>
-      {requiredNetwork !== currentNetwork &&
+  const content = useMemo(() => {
+    if (requiredNetwork !== currentNetwork) {
+      return (
         <div>
           <div className="text-center text-error text-xl font-bold pb-10">
-            You wallet is not on the correct network. The current network is {networks[currentNetwork]?.name || $`Custom Network ${currentNetwork}`}. Please switch to {networks[requiredNetwork]?.name}.
+            Your wallet is not on the correct network. The current network is{' '}
+            {/* @ts-ignore */}
+            {networks[currentNetwork]?.name ||
+              `Custom Network ${currentNetwork}`}
+            . Please switch to {networks[requiredNetwork]?.name}.
           </div>
           <div className="w-full">
-            <Button additionalClass="w-full" onClick={switchToRequiredNetwork}
-            >
+            <Button additionalClass="w-full" onClick={switchToRequiredNetwork}>
               Click here to switch to {networks[requiredNetwork]?.name}
             </Button>
           </div>
-
         </div>
-      }
-
-      {requiredNetwork === currentNetwork &&
+      );
+    } else {
+      return (
         <div>
           <div className="text-center text-xl font-bold">I like</div>
           <div className="flex justify-center gap-5 p-2">
@@ -223,10 +228,11 @@ const BetForm = () => {
             </Button>
           </div>
         </div>
-      }
+      );
+    }
+  }, [requiredNetwork, currentNetwork, selectedValues]);
 
-    </>
-  );
+  return content;
 };
 
 export default BetForm;

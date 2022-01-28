@@ -20,7 +20,8 @@ const Header = () => {
   const { setThemeCookie, setGameStatus, setFlag } = useActions();
   const { theme: _theme, setTheme } = useTheme();
   const { deactivate } = useWeb3React();
-  const { setUser, setTopWins, setRecentPlays } = useActions();
+  const { setUser, setTopWins, setRecentPlays, getTopWins, getRecent } =
+    useActions();
   const [showMobileToday, setShowMobileToday] = useState<boolean>(false);
 
   const deactivateAccount = () => {
@@ -79,9 +80,7 @@ const Header = () => {
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">BALANCE:</p>
-                <p className="text-sm ml-auto">
-                  {user.cashAmount} MATIC
-                </p>
+                <p className="text-sm ml-auto">{user.cashAmount} MATIC</p>
               </div>
             </div>
           </label>
