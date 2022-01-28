@@ -10,7 +10,7 @@ const FlippingForm: React.FC<IFlippingFormProps> = ({ side, amount }) => {
     <div>
       <div className="text-center text-xl font-bold mt-10">FLIPPING</div>
       <div className="text-center text-xl font-bold mt-2">
-        {side === 1 ? 'TAILS' : 'HEADS'} FOR {Number(ethToMatic(amount))} MATIC
+        {side === 1 ? 'TAILS' : 'HEADS'} FOR {Number((amount))} MATIC
       </div>
     </div>
   );
