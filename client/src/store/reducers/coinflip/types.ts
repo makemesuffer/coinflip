@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts';
-import { BigNumber } from 'ethers';
 
 export interface IContractConnection {
   contract: Contract | null;

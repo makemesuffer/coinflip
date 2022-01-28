@@ -18,7 +18,7 @@ export interface AppState {
   recentPlays: IPlays[];
   topPlayers: IPlays[];
   flag: 'recent' | 'top wins';
-  totalFlips: bigint;
+  totalFlips: bigint | number;
 }
 
 export enum AppActionEnum {
@@ -62,7 +62,7 @@ export interface SetFlagAction {
 
 export interface SetTotalFlipsAction {
   type: AppActionEnum.SET_TOTAL_FLIPS;
-  payload: bigint;
+  payload: bigint | number;
 }
 
 export type AppAction =

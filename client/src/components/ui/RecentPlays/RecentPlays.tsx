@@ -6,7 +6,7 @@ import { Identicon } from 'components/common/Identicon';
 import { useTypedSelector } from 'hooks/useTypedSelector';
 import { IPlays } from 'store/reducers/app/types';
 import { Loader } from 'components/common/Loader';
-import { ethToWei, weiToEth, weiToMatic } from 'utils/formatEther';
+import { weiToEth, weiToMatic } from 'utils/formatEther';
 
 interface IRecentPlays {
   flag: 'top wins' | 'recent';
