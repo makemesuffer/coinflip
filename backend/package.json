@@ -11,10 +11,12 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "block-by-date-ethers": "^1.0.0",
         "cors": "^2.8.5",
         "dotenv": "^14.3.2",
         "ethers": "^5.5.3",
-        "express": "^4.17.2"
+        "express": "^4.17.2",
+        "moment": "^2.29.1"
     },
     "engines": {
         "node": "16.x"
