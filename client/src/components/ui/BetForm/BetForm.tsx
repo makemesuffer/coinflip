@@ -63,8 +63,8 @@ const networks = {
   },
 };
 
-// const requiredNetwork = '137'; // polygon mumbai testnet
-const requiredNetwork = '80001'; // polygon mumbai testnet
+const requiredNetwork = '137'; // polygon mainnet
+// const requiredNetwork = '80001'; // polygon mumbai testnet
 
 const BetForm = () => {
   const [selectedValues, setSelectedValues] = useState<ISelectedValues>(

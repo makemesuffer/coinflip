@@ -24,8 +24,8 @@ import { allActionCreators } from '../action-creators';
 
 const defaultStartBlock = -1000000;
 const defaultProvider = new ethers.providers.AlchemyProvider(
-  80001,
-  'L2pf1v60C8YVMTXP6xIxoC8JRXniYQXq'
+  137, // polygon mainnet
+  'rgtvQvAxxZaBbwxjBs29ki9ezhKR1t4S' // LGTUFE polygon mainnet
 );
 
 export const CoinflipActionCreators = {

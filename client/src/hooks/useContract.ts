@@ -10,8 +10,9 @@ import { address } from 'data/address';
 export default function useContract<T extends Contract = Contract>() {
   const { setContract } = useActions();
   const { library, chainId, account } = useWeb3React();
-  let provider = new ethers.providers.JsonRpcProvider(
-    'https://rpc-mumbai.maticvigil.com'
+  let provider = new ethers.providers.AlchemyProvider(
+    137, // polygon mainnet
+    'rgtvQvAxxZaBbwxjBs29ki9ezhKR1t4S' // LGTUFE polygon mainnet
   );
 
   return useMemo(() => {

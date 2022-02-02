@@ -4,8 +4,8 @@ pragma solidity ^0.8.11;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.4.2/contracts/access/AccessControl.sol";
 
 contract CoinFlip is AccessControl {
-    uint _minBet = 10000000000000000; // default minimum bet is 0.01 ETH in wei units
-    uint _maxBet = 2000000000000000000; // default maximum bet is 2 ETH in wei units
+    uint _minBet = 15000000000000000000; // default minimum bet is 15 MATIC in wei units
+    uint _maxBet = 125000000000000000000; // default maximum bet is 125 MATIC in wei units
     uint _playerWinPercentage = 49; // default winning percentage is 49%
     uint _randNonce = 0;
     uint _commissionBasisPoints = 350;
