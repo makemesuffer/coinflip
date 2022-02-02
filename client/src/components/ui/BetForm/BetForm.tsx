@@ -176,51 +176,51 @@ const BetForm = () => {
             <div className="grid grid-cols-3 gap-5 p-2">
               <Button
                 additionalClass={
-                  selectedValues.value === '0.01' ? 'btn-active' : 'btn-outline'
+                  selectedValues.value === '15' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => addFocus('value', '0.01')}
+                onClick={() => addFocus('value', '15')}
               >
-                {ethToMatic(0.01)} MATIC
+                {ethToMatic(15)} MATIC
               </Button>
               <Button
                 additionalClass={
-                  selectedValues.value === '0.05' ? 'btn-active' : 'btn-outline'
+                  selectedValues.value === '25' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => addFocus('value', '0.05')}
+                onClick={() => addFocus('value', '25')}
               >
-                {ethToMatic(0.05)} MATIC
+                {ethToMatic(25)} MATIC
               </Button>
               <Button
                 additionalClass={
-                  selectedValues.value === '0.1' ? 'btn-active' : 'btn-outline'
+                  selectedValues.value === '50' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => addFocus('value', '0.1')}
+                onClick={() => addFocus('value', '50')}
               >
-                {ethToMatic(0.1)} MATIC
+                {ethToMatic(50)} MATIC
               </Button>
               <Button
                 additionalClass={
-                  selectedValues.value === '0.25' ? 'btn-active' : 'btn-outline'
+                  selectedValues.value === '75' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => addFocus('value', '0.25')}
+                onClick={() => addFocus('value', '75')}
               >
-                {ethToMatic(0.25)} MATIC
+                {ethToMatic(75)} MATIC
               </Button>
               <Button
                 additionalClass={
-                  selectedValues.value === '0.5' ? 'btn-active' : 'btn-outline'
+                  selectedValues.value === '100' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => addFocus('value', '0.5')}
+                onClick={() => addFocus('value', '100')}
               >
-                {ethToMatic(0.5)} MATIC
+                {ethToMatic(100)} MATIC
               </Button>
               <Button
                 additionalClass={
-                  selectedValues.value === '1' ? 'btn-active' : 'btn-outline'
+                  selectedValues.value === '125' ? 'btn-active' : 'btn-outline'
                 }
-                onClick={() => addFocus('value', '1')}
+                onClick={() => addFocus('value', '125')}
               >
-                {ethToMatic(1)} MATIC
+                {ethToMatic(125)} MATIC
               </Button>
             </div>
             <Button additionalClass="p-2" onClick={gameStarter}>
