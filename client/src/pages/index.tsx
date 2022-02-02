@@ -21,7 +21,7 @@ import { AlertTypes } from 'store/reducers/alert/types';
 import { parseGames } from 'utils/parseGames';
 import { LoaderNoSSR } from 'components/common/Loader';
 import { weiToEth } from 'utils/formatEther';
-import { BigNumber } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 
 const Home: NextPage = () => {
   const { theme, totalFlips, recentPlays, user } = useTypedSelector(
@@ -122,9 +122,20 @@ const Home: NextPage = () => {
 
   async function handleConnectWallet() {
     setConnecting(true);
-
     try {
       await activate(getConnectors, undefined, true);
+
+      // check if connected address has a lucky gnome nft
+      const alchemy = new ethers.providers.AlchemyProvider(1, 'p6Fnnt26ftOFhzUjdWiz3jkRbwCrrRoB');
+      const abi = ['function balanceOf(address owner) view returns (uint256)'];
+      const nftContractAddress = '0x37220294E1E797F04420830B9d61514E67F12Cd7';
+
+      const contract = new ethers.Contract(nftContractAddress, abi, alchemy);
+      const playerAddress = window.ethereum.selectedAddress;
+      const balance = await contract.balanceOf(playerAddress);
+
+      window.sessionStorage.setItem('hasLuckyGnomes', balance > 0 ? 'yes' : 'no');
+
       setGameStatus('betting');
     } catch (error: any) {
       if (error instanceof UserRejectedRequestError) {

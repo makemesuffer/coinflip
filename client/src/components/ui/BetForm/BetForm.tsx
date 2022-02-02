@@ -5,6 +5,7 @@ import { useActions } from 'hooks/useActions';
 import { ethToMatic, ethToWei, ONE_ETHER_IN_MATIC } from 'utils/formatEther';
 import { AlertTypes } from 'store/reducers/alert/types';
 import { useTypedSelector } from 'hooks/useTypedSelector';
+import { NONAME } from 'dns';
 
 interface ISelectedValues {
   side: string;
@@ -72,6 +73,7 @@ const BetForm = () => {
   const { addBet, setAlert } = useActions();
 
   const [currentNetwork, setCurrentNetwork] = useState('');
+  const [hasLuckyGnomes, setHasLuckyGnomes] = useState(false);
   const { errors, contractConnection } = useTypedSelector(
     (state) => state.coinflip
   );
@@ -79,6 +81,9 @@ const BetForm = () => {
   // @ts-ignore
   let ethereum: any;
   useEffect(() => {
+    const _hasLuckyGnomes = sessionStorage.getItem('hasLuckyGnomes');
+    setHasLuckyGnomes(_hasLuckyGnomes === 'yes');
+
     // @ts-ignore
     ethereum = window.ethereum;
 
@@ -223,9 +228,10 @@ const BetForm = () => {
                 {ethToMatic(125)} MATIC
               </Button>
             </div>
-            <Button additionalClass="p-2" onClick={gameStarter}>
+            <Button additionalClass={hasLuckyGnomes ? 'p-2' : 'p-2 opacity-25 cursor-not-allowed'} onClick={hasLuckyGnomes ? gameStarter : null}>
               DOUBLE OR NOTHING
             </Button>
+            {!hasLuckyGnomes && <span className='text-error' style={{fontSize: '24pt', border: 'none'}}>You cannot play if you do not have a Lucky Gnomes NFT</span>}
           </div>
         </div>
       );
