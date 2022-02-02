@@ -1,3 +1,4 @@
 *.env
 contracts/artifacts/CoinFlip.json
 contracts/artifacts/CoinFlip_metadata.json
+node_modules
